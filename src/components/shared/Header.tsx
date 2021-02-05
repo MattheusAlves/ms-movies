@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import Search from '@/components/Search'
 
-const Header: React.FC = () => {
+const Header = (): JSX.Element => {
   const [isActive, setIsActive] = useState(false)
 
   const toggleBurger = () => {

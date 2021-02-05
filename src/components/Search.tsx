@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import { BsSearch } from 'react-icons/bs'
 
 interface Props {
-  isActive: boolean
+  rightNav: boolean
 }
 const Search = (props: Props): JSX.Element => {
   const [isActive, setIsActive] = useState(false)
-  // const isNavActive = props.isActive
-  // useEffect(() => setIsActive(false), [isNavActive])
+  const isNavActive = props.rightNav
+  useEffect(() => setIsActive(false), [isNavActive])
   const toggleActive = () => setIsActive(!isActive)
   return (
     <div className="search-wrapper">
