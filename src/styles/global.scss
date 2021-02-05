@@ -1,0 +1,50 @@
+@import './shared/fonts';
+//header
+@import './components/header';
+
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+  font-family: 'Montserrat', 'Helvetica';
+  padding: 0;
+  margin: 0;
+  background-image: linear-gradient(
+    to bottom right,
+    #121212,
+    #121212,
+    rgba(18, 18, 18, 0.95)
+  );
+  box-sizing: border-box;
+}
+.base-layout {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.elipse {
+  background-color: white;
+  opacity: 0.12;
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  &.eps1 {
+    width: 385px;
+    height: 392px;
+    left: -243px;
+    bottom: 30px;
+  }
+  &.eps2 {
+    width: 463px;
+    height: 427px;
+    top: -195px;
+    right: -350px;
+  }
+  &.eps3 {
+    width: 271px;
+    height: 280px;
+    bottom: -140px;
+    right: -100px;
+  }
+}
