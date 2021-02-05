@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import Search from '@/components/Search'
 
 const Header: React.FC = () => {
   const [isActive, setIsActive] = useState(false)
@@ -7,6 +8,7 @@ const Header: React.FC = () => {
   const toggleBurger = () => {
     setIsActive(!isActive)
   }
+
   return (
     <nav className="nav-bar">
       <div className="nav-bar-logo">
@@ -14,18 +16,25 @@ const Header: React.FC = () => {
       </div>
       <ul className={isActive ? 'nav-links nav-active' : 'nav-links'}>
         <li>
-          <a href="#" onClick={() => toggleBurger()}>
-            Filmes
-          </a>
+          <Search rightNav={isActive} />
+        </li>
+        <li>
+          <a href="#">Filmes</a>
         </li>
         <li>
           <a href="#">Séries</a>
         </li>
       </ul>
       <div className="burger" onClick={() => toggleBurger()}>
-        <div className="burger-line1"></div>
-        <div className="burger-line2"></div>
-        <div className="burger-line3"></div>
+        <div
+          className={isActive ? 'toggle burger-line1' : 'burger-line1'}
+        ></div>
+        <div
+          className={isActive ? 'toggle burger-line2' : 'burger-line2'}
+        ></div>
+        <div
+          className={isActive ? 'toggle burger-line3' : 'burger-line3'}
+        ></div>
       </div>
     </nav>
   )
