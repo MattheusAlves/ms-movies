@@ -1,6 +1,8 @@
 @import './shared/fonts';
 //header
 @import './components/header';
+//basePage
+@import './components/basePage';
 
 html,
 body {
@@ -16,17 +18,18 @@ body {
     rgba(18, 18, 18, 0.95)
   );
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 .base-layout {
   position: relative;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 .elipse {
   background-color: white;
   opacity: 0.12;
-  position: absolute;
+  position: fixed;
   border-radius: 50%;
   z-index: 0;
   &.eps1 {
@@ -48,3 +51,5 @@ body {
     right: -100px;
   }
 }
+
+

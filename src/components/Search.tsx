@@ -16,8 +16,8 @@ const Search = (props: Props): JSX.Element => {
         className={isActive ? 'search-input active' : 'search-input'}
       />
       <BsSearch
-        color="#4b45ff"
-        size={30}
+        // color="#4b45ff"
+        size={22}
         className="search-icon"
         onClick={toggleActive}
       />
