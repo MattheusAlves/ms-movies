@@ -1,6 +1,8 @@
 .poster-wrapper {
   position: relative;
-  //   overflow: hidden;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 .poster-info {
   &-container {
@@ -9,10 +11,12 @@
     flex-direction: column;
     justify-content: flex-end;
     z-index: 14;
-    top: 0;
+    top:0;
     overflow: hidden;
     padding: 0;
-    height: 100%;
+    margin: 0;
+    height: 293px;
+    opacity: 0;
     &:hover {
       background: linear-gradient(
         to bottom,
@@ -23,17 +27,22 @@
         rgba(0, 0, 0, 1)
       );
       cursor: pointer;
-      animation: animateOpacity 0.5s ease-in-out;
+      animation: animateOpacity 0.5s ease-in-out forwards;
     }
   }
   &-overview {
-    height: 70px;
-    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* number of lines to show */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    height:72px;
     color: white;
+    margin: 0;
     font-size: 14px;
-    text-align: justify;
     overflow: hidden;
-    padding: 10px 4px 4px 4px;
+    text-align: justify;
+    padding: 10px 7px 0px 7px;
+    margin-bottom: 10px;
   }
 }
 

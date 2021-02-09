@@ -2,7 +2,15 @@ import ReactLoading from 'react-loading'
 
 const Loading = (): JSX.Element => {
   return (
-    <ReactLoading type="spinningBubbles" color="red" height={667} width={375} />
+    <div className="loading-wrapper">
+      <ReactLoading
+        type="spinningBubbles"
+        color="#4B45FF"
+        className="loading"
+        height={167}
+        width={250}
+      />
+    </div>
   )
 }
 
