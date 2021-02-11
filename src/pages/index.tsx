@@ -7,7 +7,9 @@ interface IincrementPage {
   (page: number): void
 }
 export async function getServerSideProps() {
-  const data = await fetcher('http://localhost:3000/api/movies/popular?page=1')
+  const data = await fetcher(
+    `${process.env.BASE_URL}/api/movies/popular?page=1`
+  )
   return { props: { data } }
 }
 const Index: React.ReactNode = props => {
