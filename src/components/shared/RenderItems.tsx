@@ -1,4 +1,5 @@
-import PosterCard from '@/components/PosterCard'
+import PosterCard from '@/components/shared/PosterCard'
+
 
 const RenderItems = (props): JSX.Element => {
   const { data } = props

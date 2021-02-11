@@ -1,5 +1,4 @@
 import { useReducer, useEffect } from 'react'
-import Router from 'next-router'
 import debounce from '@/util/debounce'
 interface Props {
   children?: React.ReactNode
@@ -8,7 +7,7 @@ interface Props {
 function reducer(state, action) {
   switch (action.type) {
     case 'increment':
-      return { page: state.count + 1 }
+      return { page: state.page + 1 }
     default:
       throw new Error()
   }
@@ -17,24 +16,31 @@ function reducer(state, action) {
 const BasePage: React.FC = ({ children, callback }) => {
   const [state, dispatch] = useReducer(reducer, { page: 1 })
 
-  const onScroll = debounce(() => {
-    console.log('executou')
-    if (
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.documentElement.offsetHeight
-    ) {
-      dispatch({ type: 'increment' })
-      callback(state.page)
-    }
-  }, 100)
+  const onScroll = debounce(
+    (page, e) => {
+      console.log('scroll top', e.target.scrollTop)
+      console.log('scroll height', e.target.scrollHeight)
+      console.log('client height', e.target.clientHeight)
+      if (
+        e.target.scrollHeight - e.target.scrollTop >=
+        document.body.offsetHeight
+      ) {
+        const currentPage = page + 1
+        callback(currentPage)
+        dispatch({ type: 'increment' })
+      }
+    },
+    200,
+    state.page
+  )
 
   useEffect(() => {
-    const page = document.getElementsByClassName('base-layout')
-    page[0].addEventListener('scroll', onScroll)
+    const doc = document.getElementsByClassName('base-layout')
+    doc[0].addEventListener('scroll', onScroll)
     return () => {
-      page[0].removeEventListener('scroll', onScroll)
+      doc[0].removeEventListener('scroll', onScroll)
     }
-  }, [])
+  }, [state.page])
 
   return <div className="base-page">{children}</div>
 }

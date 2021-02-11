@@ -15,7 +15,7 @@ $secondary: #4571ff;
   border: 1px solid #000000;
   box-sizing: border-box;
   box-shadow: 01px 7px 22px rgba(0, 0, 0, 0.25);
-  z-index: 10;
+  z-index: 999;
   &-logo {
     padding: 0px 20px;
     color: #fff;
@@ -29,6 +29,7 @@ $secondary: #4571ff;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  z-index: 99;
   li {
     list-style: none;
     padding: 20px;
@@ -40,7 +41,6 @@ $secondary: #4571ff;
     font-size: 22px;
   }
 }
-
 .burger {
   display: none;
   div {
@@ -108,14 +108,12 @@ $secondary: #4571ff;
     }
   }
   .nav-links {
-    position: absolute;
+    position: fixed;
     right: 0;
-    height: 93vh;
-    z-index: 12;
+    height: 100%;
     top: 8vh;
     background-color: $base-color;
     box-shadow: -2px 0px 42px rgba(0, 0, 0, 0.45);
-    z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -144,12 +142,14 @@ $secondary: #4571ff;
   }
   .burger {
     display: block;
-    z-index: 1;
+    z-index: 999;
   }
 }
 .nav-active {
-  transform: translateY(0%);
+  transform: translateX(0%);
+  top:0;
 }
+
 @keyframes navLinkFade {
   from {
     opacity: 0;

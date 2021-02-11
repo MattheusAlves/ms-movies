@@ -1,4 +1,4 @@
-import useSWR from 'swr'
+import useSWR, { useSWRInfinite } from 'swr'
 import fetcher from '@/util/fetcher'
 interface returnedData {
   data?: Record<string, any>
@@ -7,7 +7,7 @@ interface returnedData {
 }
 interface Props {
   page: number
-  initialData: Record<string, any>
+  initialData: any
 }
 
 export const useGetPopularMovies = ({
@@ -17,7 +17,9 @@ export const useGetPopularMovies = ({
   const { data, error, ...rest } = useSWR(
     `/api/movies/popular?page=${page}`,
     fetcher,
-    { initialData }
+    {
+      initialData
+    }
   )
   return { data, error, loading: !data && !error, ...rest }
 }

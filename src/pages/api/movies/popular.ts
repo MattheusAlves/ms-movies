@@ -19,7 +19,7 @@ export default async function popular(
     const data = movies.data
     res.status(200).json(data)
   } catch (e) {
-    console.log(e)
+    console.log(e.data)
     res.status(e.status || 400).json({ message: 'Api error' })
   }
 }

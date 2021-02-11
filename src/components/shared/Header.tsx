@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import Search from '@/components/Search'
+import Search from '@/components/shared/Search'
 
 const Header = (): JSX.Element => {
   const [isActive, setIsActive] = useState(false)
