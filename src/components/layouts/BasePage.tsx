@@ -1,8 +1,8 @@
 import { useReducer, useEffect } from 'react'
 import debounce from '@/util/debounce'
 interface Props {
-  children?: React.ReactNode
-  callback?: void
+  children?: JSX.Element[]
+  callback(page: number): void
 }
 function reducer(state, action) {
   switch (action.type) {
@@ -13,7 +13,7 @@ function reducer(state, action) {
   }
 }
 
-const BasePage: React.FC = ({ children, callback }) => {
+const BasePage = ({ children, callback }: Props): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, { page: 1 })
 
   const onScroll = debounce(
