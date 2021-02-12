@@ -1,11 +1,10 @@
-const debounce = (func, wait, page) => {
+const debounce = (func, wait) => {
   let timeout
 
   return function executedFunction(...args) {
     const later = () => {
       clearTimeout(timeout)
-      console.log('page', page)
-      func(page, ...args)
+      func(...args)
     }
 
     clearTimeout(timeout)

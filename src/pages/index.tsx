@@ -1,29 +1,40 @@
+import { useReducer } from 'react'
+
 import BaseLayout from '@/components/layouts/BaseLayout'
 import BasePage from '@/components/layouts/BasePage'
 import fetcher from '@/util/fetcher'
 import Movies from '@/components/Movies'
 
-interface IincrementPage {
-  (page: number): void
-}
 export async function getServerSideProps() {
-  const data = await fetcher(
-    `${process.env.BASE_URL}/api/movies/popular?page=1`
-  )
+  const data = []
+  for (let i = 1; i < 3; i++) {
+    const result = await fetcher(
+      `${process.env.BASE_URL}/api/movies/popular?page=${i}`
+    )
+    data.push(result)
+  }
   return { props: { data } }
 }
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { page: state.page + 3 }
+    default:
+      throw new Error()
+  }
+}
 const Index: React.ReactNode = props => {
-  const pages: JSX.Element[] = []
-  pages.push(<Movies initialData={props.data} key={1} />)
-  const incrementPage: IincrementPage = (page: number): void => {
-    if (page < props.data.total_pages) {
-      pages.push(<Movies index={page} key={page} />)
-    }
+  const [state, dispatch] = useReducer(reducer, { page: 2 })
+  const incrementPage = (): void => {
+    console.log('call increment')
+    dispatch({ type: 'increment' })
   }
 
   return (
     <BaseLayout>
-      <BasePage callback={incrementPage}>{pages}</BasePage>
+      <BasePage callback={incrementPage}>
+        <Movies initialData={props.initialData} index={state.page} />
+      </BasePage>
     </BaseLayout>
   )
 }
