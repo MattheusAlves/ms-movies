@@ -4,6 +4,8 @@ interface returnedData {
   data?: Record<string, any>
   error?: Record<string, any>
   loading?: boolean
+  size?: number
+  setSize?: (size: number) => Promise<any>
 }
 interface Props {
   page: number

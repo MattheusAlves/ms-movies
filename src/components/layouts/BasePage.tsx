@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import debounce from '@/util/debounce'
 interface Props {
-  children?: JSX.Element[]
+  children?: JSX.Element
   callback(): void
 }
 
