@@ -84,7 +84,9 @@ $secondary: #4571ff;
     }
   }
 }
-
+.currentLink {
+  color: $principal !important;
+}
 //cellphones
 @media screen and(max-width:768px) {
   body {

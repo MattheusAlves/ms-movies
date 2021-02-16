@@ -1,4 +1,5 @@
 import { useReducer, useState } from 'react'
+import { useRouter } from 'next/router'
 import { GetStaticPaths, GetStaticProps } from 'next'
 
 import BaseLayout from '@/components/layouts/BaseLayout'
@@ -18,6 +19,7 @@ function reducer(state, action) {
 const Index: React.ReactNode = props => {
   const [state, dispatch] = useReducer(reducer, { page: 4 })
   const [size, setSize] = useState(4)
+  const router = useRouter()
   const incrementPage = (): void => {
     if (state.page === size) {
       dispatch({ type: 'increment' })
@@ -30,11 +32,19 @@ const Index: React.ReactNode = props => {
   return (
     <BaseLayout>
       <BasePage callback={incrementPage}>
-        <Movies
-          initialData={props.initialData}
-          index={state.page}
-          setCurrentSize={setCurrentSize}
-        />
+        {router.query.type === 'movies' ? (
+          <Movies
+            initialData={props.initialData}
+            index={state.page}
+            setCurrentSize={setCurrentSize}
+          />
+        ) : (
+          <Series
+            initialData={props.initialData}
+            index={state.page}
+            setCurrentSize={setCurrentSize}
+          />
+        )}
       </BasePage>
     </BaseLayout>
   )
@@ -45,7 +55,7 @@ export const getStaticProps: GetStaticProps = async context => {
   // defines URL for series and movies in that order
   const URL =
     context.params.type === 'series'
-      ? `${process.env.BASE_URL}/api/tv/popular?`
+      ? `${process.env.BASE_URL}/api/series/popular?`
       : `${process.env.BASE_URL}/api/movies/popular?`
   const result = await fetcher(`${URL}page=${1}`)
   data.push(result)

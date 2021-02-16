@@ -7,7 +7,7 @@ import LoadingCard from '@/components/shared/LoadingCard'
 
 interface Props {
   index?: number
-  initialData?: Record<string, any>
+  initialData?: unknown[]
   setCurrentSize: (number) => void
 }
 const Movies = (props: Props): JSX.Element => {

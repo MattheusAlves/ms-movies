@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import Search from '@/components/shared/Search'
 
 const Header = (): JSX.Element => {
   const [isActive, setIsActive] = useState(false)
+  const router = useRouter()
 
   const toggleBurger = () => {
     setIsActive(!isActive)
@@ -19,10 +22,24 @@ const Header = (): JSX.Element => {
           <Search rightNav={isActive} />
         </li>
         <li>
-          <a href="#">Filmes</a>
+          <Link href="/movies">
+            <a
+              href="#"
+              className={router.query.type === 'movies' ? 'currentLink' : ''}
+            >
+              Filmes
+            </a>
+          </Link>
         </li>
         <li>
-          <a href="#">Séries</a>
+          <Link href="/series">
+            <a
+              href="#"
+              className={router.query.type === 'series' ? 'currentLink' : ''}
+            >
+              Séries
+            </a>
+          </Link>
         </li>
       </ul>
       <div className="burger" onClick={() => toggleBurger()}>
