@@ -1,10 +1,10 @@
 import { useReducer, useState } from 'react'
 import { useRouter } from 'next/router'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import axios from 'axios'
 
 import BaseLayout from '@/components/layouts/BaseLayout'
 import BasePage from '@/components/layouts/BasePage'
-import fetcher from '@/util/fetcher'
 import Movies from '@/components/Movies'
 import Series from '@/components/Series'
 
@@ -51,15 +51,20 @@ const Index: React.ReactNode = props => {
 }
 
 export const getStaticProps: GetStaticProps = async context => {
-  const data = []
-  // defines URL for series and movies in that order
-  const URL =
-    context.params.type === 'series'
-      ? `${process.env.BASE_URL}/api/series/popular?`
-      : `${process.env.BASE_URL}/api/movies/popular?`
-  const result = await fetcher(`${URL}page=${1}`)
-  data.push(result)
-  return { props: { initialData: data }, revalidate: 120 }
+  const result = await axios.get(
+    context.params.type === 'movies'
+      ? 'https://api.themoviedb.org/4/discover/movie?sort_by=popularity.desc'
+      : 'https://api.themoviedb.org/4/discover/tv?sort_by=popularity.desc',
+    {
+      params: {
+        api_key: '2d33c77063aa0a5a20bcf4682a1c151c',
+        page: 1
+      }
+    }
+  )
+  const titles = [result.data]
+
+  return { props: { initialData: titles }, revalidate: 120 }
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {

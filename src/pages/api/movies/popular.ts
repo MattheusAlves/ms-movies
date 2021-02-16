@@ -5,7 +5,7 @@ export default async function popular(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const { page } = req.query
+  const { page = 1 } = req.query
   try {
     const movies = await axios.get(
       'https://api.themoviedb.org/4/discover/movie?sort_by=popularity.desc',
