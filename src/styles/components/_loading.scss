@@ -1,6 +1,14 @@
 .loading-wrapper {
-  margin-top:50px;
-  grid-column: 3 / span 2;
+  position: absolute;
+  top: 30%;
 }
-.loading{
+.loading {
+  width: 60vw;
+}
+.card-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  
 }

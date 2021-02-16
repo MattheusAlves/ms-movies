@@ -6,15 +6,6 @@ interface Props {
 }
 
 const BasePage = ({ children, callback }: Props): JSX.Element => {
-  const onScroll = debounce(e => {
-    if (
-      e.target.scrollHeight - e.target.scrollTop ===
-      document.body.offsetHeight
-    ) {
-      callback()
-    }
-  }, 100)
-
   useEffect(() => {
     const doc = document.getElementsByClassName('base-layout')
     doc[0].addEventListener('scroll', onScroll)
@@ -22,6 +13,18 @@ const BasePage = ({ children, callback }: Props): JSX.Element => {
       doc[0].removeEventListener('scroll', onScroll)
     }
   }, [])
+
+  const onScroll = debounce(e => {
+    console.log('scroll height', e.target.scrollHeight)
+    console.log('scroll top', e.target.scrollTop)
+    console.log('offsetHeight', e.target.offsetHeight)
+    if (
+      e.target.scrollHeight - e.target.scrollTop ===
+      document.body.offsetHeight
+    ) {
+      callback()
+    }
+  }, 300)
 
   return <div className="base-page">{children}</div>
 }
