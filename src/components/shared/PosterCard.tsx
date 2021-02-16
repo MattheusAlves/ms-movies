@@ -13,7 +13,6 @@ interface Props {
 const PosterCard = (props: Props): JSX.Element => {
   const { src, info } = props
   const handleImageError = image => {
-    // console.log(image.target)
     image.target.src = '/404.png'
     image.target.srcset = '/404.png'
   }
@@ -23,6 +22,9 @@ const PosterCard = (props: Props): JSX.Element => {
         src={src}
         width={256}
         height={360}
+        quality={70}
+        priority={true}
+        loading="eager"
         onError={e => handleImageError(e)}
       />
       <div className="poster-info-container">
