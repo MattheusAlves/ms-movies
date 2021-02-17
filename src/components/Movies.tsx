@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import RenderItems from '@/components/shared/RenderItems'
-import { useGetPopularMovies } from '@/actions'
+import { useGetPopularMovies } from '@/actions/popular'
 import Loading from '@/components/shared/Loading'
 import LoadingCard from '@/components/shared/LoadingCard'
 

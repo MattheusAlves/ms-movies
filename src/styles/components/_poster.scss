@@ -6,24 +6,27 @@
 }
 .poster-info {
   &-container {
+    color: #fff;
     position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     z-index: 10;
-    top:0;
+    top: 0;
     overflow: hidden;
     padding: 0;
     margin: 0;
     height: 100%;
+    width: 100%;
     opacity: 0;
     &:hover {
       background: linear-gradient(
         to bottom,
-        rgba(0, 0, 0, 0.4),
+        rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.55),
         rgba(0, 0, 0, 0.65),
         rgba(0, 0, 0, 0.75),
+        rgba(0, 0, 0, 0.95),
         rgba(0, 0, 0, 1)
       );
       cursor: pointer;
@@ -35,7 +38,7 @@
     -webkit-line-clamp: 4; /* number of lines to show */
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
-    height:72px;
+    height: 72px;
     color: white;
     margin: 0;
     font-size: 14px;
@@ -43,7 +46,28 @@
     text-align: justify;
     padding: 10px 7px 0px 7px;
     margin-bottom: 10px;
-    
+  }
+  &-title {
+    padding: 10px 7px 0px 7px;
+    font-weight: bold;
+  }
+  &-vote_avarage {
+    color: #fff;
+    &-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #4b45ff;
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 10px;
+      height: 15px;
+      width: 15px;
+      border-radius: 3px;
+      margin: 4px 7px 0px 0px;
+      border: none;
+    }
   }
 }
 

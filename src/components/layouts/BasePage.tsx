@@ -6,12 +6,12 @@ interface Props {
   callback(): void
 }
 
-const BasePage = ({ children, callback }: Props): JSX.Element => {
+const BasePage = ({ children, callback = () => null }: Props): JSX.Element => {
   useEffect(() => {
     const doc = document.getElementsByClassName('base-layout')
     doc[0].addEventListener('scroll', onScroll)
     return () => {
-      doc[0].removeEventListener('scroll', onScroll)
+      doc && doc[0] && doc[0].removeEventListener('scroll', onScroll)
     }
   }, [])
 

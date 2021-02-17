@@ -7,7 +7,7 @@ export default async function popular(
 ): Promise<void> {
   const { page } = req.query
   try {
-    const movies = await axios.get(
+    const series = await axios.get(
       'https://api.themoviedb.org/4/discover/tv?sort_by=popularity.desc',
       {
         params: {
@@ -16,8 +16,7 @@ export default async function popular(
         }
       }
     )
-    console.log('teste')
-    const data = movies.data
+    const data = series.data
     res.status(200).json(data)
   } catch (e) {
     console.log(e.data)

@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { isMobile } from 'react-device-detect'
+import { isMobile, BrowserView, MobileView } from 'react-device-detect'
 
 interface Props {
   src: string
@@ -30,12 +30,15 @@ const PosterCard = (props: Props): JSX.Element => {
         loading="eager"
         onError={e => handleImageError(e)}
       />
-      <div className="poster-info-container">
-        <p className="poster-info-overview">{`${info.overview.slice(
-          0,
-          95
-        )}...`}</p>
-      </div>
+      <BrowserView viewClassName="poster-info-container">
+        <span className="poster-info-vote_avarage-wrapper">
+          <p className="poster-info-vote_avarage">{info.voteAverage || ''}</p>
+        </span>
+        <p className="poster-info-title">{info.title || ''}</p>
+        <p className="poster-info-overview">{`${
+          info.overview ? info.overview.slice(0, 95) : ''
+        }...`}</p>
+      </BrowserView>
     </div>
   )
 }

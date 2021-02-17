@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import RenderItems from '@/components/shared/RenderItems'
-import { useGetPopularSeries } from '@/actions'
+import { useGetPopularSeries } from '@/actions/popular'
 import Loading from '@/components/shared/Loading'
 import LoadingCard from '@/components/shared/LoadingCard'
 
