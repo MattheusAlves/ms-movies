@@ -46,7 +46,7 @@ $secondary: #4571ff;
   div {
     width: 25px;
     height: 3px;
-    background-color: rgb(226, 226, 226);
+    background-color: $principal;
     margin: 5px;
     transition: all 0.3s ease;
   }
