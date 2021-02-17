@@ -16,8 +16,8 @@ const BasePage = ({ children, callback }: Props): JSX.Element => {
 
   const onScroll = debounce(e => {
     if (
-      e.target.scrollHeight - e.target.scrollTop ===
-      document.body.offsetHeight
+      e.target.scrollHeight - e.target.scrollTop <=
+      document.body.offsetHeight + 600
     ) {
       callback()
     }

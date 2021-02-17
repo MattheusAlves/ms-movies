@@ -22,8 +22,10 @@ const PosterCard = (props: Props): JSX.Element => {
         src={src}
         width={256}
         height={360}
-        quality={70}
-        priority={true}
+        quality={50}
+        // nao adicionar priorty=true
+        // priority={true}
+        // unoptimized={true}
         loading="eager"
         onError={e => handleImageError(e)}
       />

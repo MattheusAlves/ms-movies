@@ -64,7 +64,7 @@ export const getStaticProps: GetStaticProps = async context => {
   )
   const titles = [result.data]
 
-  return { props: { initialData: titles }, revalidate: 120 }
+  return { props: { initialData: titles }, revalidate: 3600 }
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
