@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { isMobile } from 'react-device-detect'
 
 interface Props {
   src: string
@@ -22,7 +23,7 @@ const PosterCard = (props: Props): JSX.Element => {
         src={src}
         width={256}
         height={360}
-        quality={50}
+        quality={isMobile ? 30 : 50}
         // nao adicionar priorty=true
         // priority={true}
         // unoptimized={true}
