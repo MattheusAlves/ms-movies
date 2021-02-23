@@ -30,9 +30,6 @@ const Persons = ({ mediaType, mediaId }): JSX.Element => {
       setVisibleSlides(4)
     }
   }, [data])
-  const toggleLoadImage = id => {
-    return endLoad.some(current => current === id)
-  }
 
   return (
     <div className={styles['characters-container']}>
@@ -54,14 +51,14 @@ const Persons = ({ mediaType, mediaId }): JSX.Element => {
                     className={styles['character-slide']}
                   >
                     <div className={styles['character-wrapper']}>
-                      {!toggleLoadImage(person.id) && <Loading />}
+                      {/* {!toggleLoadImage(person.id) && <Loading />} */}
                       <div className={styles['character-image-wrapper']}>
                         <Image
                           src={`https://image.tmdb.org/t/p/w200${person.profile_path}`}
                           width={170}
                           height={250}
                           quality={100}
-                          onLoad={() => setEndLoad([...endLoad, person.id])}
+                          // onLoad={() => setEndLoad([...endLoad, person.id])}
                         />
                       </div>
                       <div className={styles['character-info-container']}>
