@@ -23,7 +23,6 @@ const Index: React.ReactNode = props => {
   const incrementPage = (): void => {
     if (state.page === size) {
       dispatch({ type: 'increment' })
-      console.log('state.page', state.page)
     }
   }
   const setCurrentSize = size => {

@@ -10,12 +10,14 @@
   "dependencies": {
     "axios": "^0.21.1",
     "next": "10.0.6",
+    "pure-react-carousel": "^1.27.6",
     "react": "17.0.1",
     "react-device-detect": "^1.15.0",
     "react-dom": "17.0.1",
     "react-icons": "^4.1.0",
     "react-loading": "^2.0.3",
     "sass": "^1.32.6",
+    "sharp": "^0.27.2",
     "swr": "^0.4.1"
   },
   "devDependencies": {

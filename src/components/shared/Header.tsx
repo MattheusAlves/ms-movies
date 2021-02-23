@@ -5,11 +5,15 @@ import Link from 'next/link'
 import Search from '@/components/shared/Search'
 
 const Header = (): JSX.Element => {
-  const [isActive, setIsActive] = useState(false)
   const router = useRouter()
-
+  const [isActive, setIsActive] = useState(false)
+  const [contentType, setContentType] = useState(router.query.type)
   const toggleBurger = () => {
     setIsActive(!isActive)
+  }
+
+  const toggleContentType = (): void => {
+    setContentType(contentType === 'movies' ? 'series' : 'movies')
   }
 
   return (
@@ -25,7 +29,8 @@ const Header = (): JSX.Element => {
           <Link href="/movies">
             <a
               href="#"
-              className={router.query.type === 'movies' ? 'currentLink' : ''}
+              className={contentType === 'movies' ? 'currentLink' : ''}
+              onClick={toggleContentType}
             >
               Filmes
             </a>
@@ -35,7 +40,8 @@ const Header = (): JSX.Element => {
           <Link href="/series">
             <a
               href="#"
-              className={router.query.type === 'series' ? 'currentLink' : ''}
+              className={contentType === 'series' ? 'currentLink' : ''}
+              onClick={toggleContentType}
             >
               Séries
             </a>

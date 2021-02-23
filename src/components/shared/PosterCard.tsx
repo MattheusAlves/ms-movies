@@ -1,5 +1,6 @@
 import Image from 'next/image'
-import { isMobile, BrowserView, MobileView } from 'react-device-detect'
+import { useRouter } from 'next/router'
+import { isMobile, BrowserView } from 'react-device-detect'
 
 interface Props {
   src: string
@@ -8,17 +9,29 @@ interface Props {
     voteAverage: number
     overview: string
     releaseDate: string
+    mediaType: string
+    mediaId: string
   }
 }
 
 const PosterCard = (props: Props): JSX.Element => {
   const { src, info } = props
+  const router = useRouter()
   const handleImageError = image => {
     image.target.src = '/404.png'
     image.target.srcset = '/404.png'
   }
   return (
-    <div className="poster-wrapper">
+    <div
+      className="poster-wrapper"
+      onClick={() =>
+        router.push(
+          `/info/${
+            info.mediaType || router.query.type === 'movies' ? 'movie' : 'tv'
+          }/${info.mediaId}`
+        )
+      }
+    >
       <Image
         src={src}
         width={256}

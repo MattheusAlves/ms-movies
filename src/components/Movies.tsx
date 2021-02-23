@@ -22,7 +22,6 @@ const Movies = (props: Props): JSX.Element => {
     initialData: props.initialData || null
   })
   useEffect(() => {
-    console.log('setSize', props.index)
     if (!isValidating && !loading) {
       setSize(props.index)
       props.setCurrentSize(props.index)

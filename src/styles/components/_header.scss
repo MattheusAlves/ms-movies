@@ -14,14 +14,19 @@ $secondary: #4571ff;
   background-color: rgba(18, 18, 18, 0.95);
   box-sizing: border-box;
   box-shadow: 01px 67px 172px rgba(0, 0, 0, 0.25);
-  z-index: 999;
+  z-index: 99;
   border-bottom: 0.1rem groove $principal;
   &-logo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     padding: 0px 20px;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 5px;
     font-size: 20px;
+    z-index: 99;
   }
 }
 //right nav
@@ -29,7 +34,7 @@ $secondary: #4571ff;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 99;
+  z-index: 20;
   li {
     list-style: none;
     padding: 20px;
