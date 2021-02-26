@@ -35,9 +35,10 @@ $secondary: #4571ff;
   justify-content: space-around;
   align-items: center;
   z-index: 20;
+  margin-right: 14px;
   li {
     list-style: none;
-    padding: 20px;
+    padding: 15px;
   }
   a {
     color: #fff;
@@ -48,6 +49,7 @@ $secondary: #4571ff;
 }
 .burger {
   display: none;
+  padding:5px;
   div {
     width: 25px;
     height: 3px;
@@ -100,7 +102,10 @@ $secondary: #4571ff;
     min-height: -webkit-fill-available;
   }
   .nav-bar {
+    position: fixed;
+    width:100%;
     height: 8vh;
+    max-height: none;
     &-logo {
       font-size: 14px;
     }
@@ -149,7 +154,7 @@ $secondary: #4571ff;
   }
   .burger {
     display: block;
-    z-index: 999;
+    z-index: 99;
   }
 }
 .nav-active {

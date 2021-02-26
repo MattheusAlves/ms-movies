@@ -4,12 +4,7 @@
 //basePage
 @import './components/basePage';
 
-
-
-html,
 body {
-  height: 100vh;
-  // width: 100vw;
   font-family: 'Montserrat', 'Helvetica';
   padding: 0;
   margin: 0;
@@ -20,13 +15,13 @@ body {
     rgba(18, 18, 18, 0.95)
   );
   box-sizing: border-box;
-  overflow-x: hidden;
+  max-width: 100vw;
 }
 .base-layout {
   position: relative;
-  width: 100vw;
-  height: 100vh;
-  // overflow-x: hidden;
+  width: 100%;
+  height: 100%;
+ 
 }
 .elipse {
   background-color: white;
@@ -53,5 +48,3 @@ body {
     right: -100px;
   }
 }
-
-

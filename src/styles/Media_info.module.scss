@@ -8,8 +8,11 @@
     padding: 3rem;
   }
   &-wrapper {
-    width: 70vw;
-    // border: 1px solid white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
   }
   &-presentation-wrapper {
     display: flex;
@@ -17,7 +20,7 @@
     padding: 0 0 2rem 0;
   }
   &-presentation-info {
-    width: 50%;
+    width: 70%;
     color: white;
     padding: 0 2rem;
   }
@@ -31,7 +34,7 @@
   }
   &-presentation-poster-wrapper {
     width: 15rem;
-    height: 20rem;
+    border: 1px solid white;
   }
 }
 .cast-wrapper {
@@ -44,15 +47,22 @@
 @media screen and (max-width: 768px) {
   .media {
     &-container {
-      padding: 12px 10px;
+      padding:0;
+      margin:0;
+      width: 100vw;
+      display: flex;
+      align-items: center;
       justify-content: center;
+      flex-direction: column;
     }
     &-wrapper {
-      width: 100%;
+      margin-top: 8vh;
+      width:100vw;
     }
     &-presentation-wrapper {
       flex-direction: column;
       align-items: center;
+      padding:1.5rem;
     }
     &-presentation-info {
       width: 100%;

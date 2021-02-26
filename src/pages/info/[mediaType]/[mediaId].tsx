@@ -17,7 +17,7 @@ const Title = ({ data, mediaType }): JSX.Element => {
                 src={`https://image.tmdb.org/t/p/w400${data.poster_path}`}
                 width={316}
                 height={400}
-                quality={100}
+                quality={80}
                 layout="responsive"
               />
             </div>
