@@ -1,6 +1,6 @@
 # MS - Filmes e Séries
 
-### Look for information about movies and series
+### Look for information about movies and TV shows
 
 **MS is a responsive website built with React, Next.js, SWR, SASS and serverless functions that query imdb APIs**
 
