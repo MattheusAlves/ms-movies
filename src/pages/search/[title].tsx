@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next'
+import Head from 'next/head'
 import axios from 'axios'
 
 import RenderItems from '@/components/shared/RenderItems'
@@ -6,11 +7,16 @@ import BaseLayout from '@/components/layouts/BaseLayout'
 import BasePage from '@/components/layouts/BasePage'
 
 const Search = (props): JSX.Element => {
-  console.log(props.data)
+  console.log(props)
   return (
     <BaseLayout>
       <BasePage callback={() => null}>
-        <RenderItems data={props.data} />
+        <>
+          <Head>
+            <title>MS - Search</title>
+          </Head>
+          <RenderItems data={props.data} />
+        </>
       </BasePage>
     </BaseLayout>
   )

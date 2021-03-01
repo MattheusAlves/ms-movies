@@ -1,6 +1,6 @@
 .characters-container {
   max-height: 250px;
-  width: 70%;
+  width: 100%;
 }
 
 .character {
@@ -72,7 +72,6 @@
   position:absolute;
   top:0;
   background: url('/loading.gif') no-repeat center;
-  background-color: red;
   z-index: 99;
   width: 100%;
   height: 100%;

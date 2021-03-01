@@ -37,10 +37,6 @@ const PosterCard = (props: Props): JSX.Element => {
         width={256}
         height={360}
         quality={isMobile ? 30 : 30}
-        // nao adicionar priorty=true
-        // priority={true}
-        // unoptimized={true}
-        // loading="eager"
         onError={e => handleImageError(e)}
       />
       <BrowserView viewClassName="poster-info-container">

@@ -34,9 +34,10 @@ const Persons = ({ mediaType, mediaId }): JSX.Element => {
         <CarouselProvider
           naturalSlideHeight={250}
           naturalSlideWidth={170}
-          visibleSlides={isMobile ? 3 : 5}
+          visibleSlides={isMobile ? 3 : 6}
           totalSlides={data.length}
           className={styles['characters-slider-provider']}
+          step={3} // the number of slides to move when pressing the button next
         >
           <Slider className={styles['characters-slider']}>
             {data.map(
@@ -48,9 +49,7 @@ const Persons = ({ mediaType, mediaId }): JSX.Element => {
                     className={styles['character-slide']}
                   >
                     <div className={styles['character-wrapper']}>
-                      <div
-                        className={`${styles.characterImageWrapper} ${styles.loading}`}
-                      >
+                      <div className={`${styles.loading}`}>
                         <Image
                           src={`https://image.tmdb.org/t/p/w200${person.profile_path}`}
                           width={170}
@@ -58,7 +57,9 @@ const Persons = ({ mediaType, mediaId }): JSX.Element => {
                           quality={75}
                           className={styles.loading}
                           onLoad={e =>
-                            (e.target.parentElement.parentElement.classList = [])
+                            (e.target as HTMLImageElement).parentElement.parentElement.classList.remove(
+                              styles.loading
+                            )
                           }
                         />
                       </div>

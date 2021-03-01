@@ -1,6 +1,7 @@
 import { useReducer, useState } from 'react'
-import { useRouter } from 'next/router'
+import Head from 'next/head'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { useRouter } from 'next/router'
 import axios from 'axios'
 
 import BaseLayout from '@/components/layouts/BaseLayout'
@@ -32,17 +33,27 @@ const Index: React.ReactNode = props => {
     <BaseLayout>
       <BasePage callback={incrementPage}>
         {router.query.type === 'movies' ? (
-          <Movies
-            initialData={props.initialData}
-            index={state.page}
-            setCurrentSize={setCurrentSize}
-          />
+          <>
+            <Head>
+              <title>MS - Filmes</title>
+            </Head>
+            <Movies
+              initialData={props.initialData}
+              index={state.page}
+              setCurrentSize={setCurrentSize}
+            />
+          </>
         ) : (
-          <Series
-            initialData={props.initialData}
-            index={state.page}
-            setCurrentSize={setCurrentSize}
-          />
+          <>
+            <Head>
+              <title>MS - Séries</title>
+            </Head>
+            <Series
+              initialData={props.initialData}
+              index={state.page}
+              setCurrentSize={setCurrentSize}
+            />
+          </>
         )}
       </BasePage>
     </BaseLayout>
