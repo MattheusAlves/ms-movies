@@ -6,7 +6,8 @@
 
 [MS - Filmes e Séries](https://ms-movies.vercel.app/)
 
-\***\*Screenshots\*\***
+**Screenshots**
+
 ![ss1](/screenshots/ms1.png?w=512)  
 <br/>
 
