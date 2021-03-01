@@ -9,4 +9,4 @@
 ****Screenshots****
 ![](/screenshots/ms1.png?w=512)
 ![](/screenshots/ms2.png?w=512)
-<div style="text-align:center"><img src="/screenshots/ms2.png?w=360"/></div>
+<div style="text-align:center"><img src="/screenshots/ms3.png?w=360"/></div>
