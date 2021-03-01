@@ -6,9 +6,11 @@
 
 [MS - Filmes e Séries](https://ms-movies.vercel.app/)
 
-****Screenshots****
-![](/screenshots/ms1.png?w=512)
+\***\*Screenshots\*\***
+![ss1](/screenshots/ms1.png?w=512)  
+<br/>
 
-![](/screenshots/ms2.png?w=512)
+![ss2](/screenshots/ms2.png?w=512)
+<br/>
 
-<div style="text-align:center"><img src="/screenshots/ms3.png?w=360"/></div>
+![ss3](/screenshots/ms3.png?w=512)
