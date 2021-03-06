@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useState } from 'react'
 
 interface ContentTypeContextData {
   contentType: string
   changeContentType: (string) => void
   loading: boolean
-  toggleLoading: () => void
+  toggleLoading: (boolean) => void
 }
 interface ContentTypeProviderProps {
   children: React.ReactNode
@@ -19,8 +19,9 @@ export function ContentTypeProvider({
 
   const changeContentType = (contentType: string) => {
     setContentType(contentType)
+    setLoading(true)
   }
-  const toggleLoading = () => setLoading(!loading)
+  const toggleLoading = (value: boolean) => setLoading(value)
   return (
     <ContentTypeContext.Provider
       value={{ contentType, changeContentType, loading, toggleLoading }}
