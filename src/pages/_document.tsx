@@ -4,9 +4,7 @@ export default class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head>
-          <title>MS - Filmes e Séries</title>
-        </Head>
+        <Head></Head>
         <body>
           <Main />
           <NextScript />
