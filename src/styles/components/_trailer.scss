@@ -1,0 +1,13 @@
+.media {
+  &-trailer {
+    width: 100%;
+    height: 30rem;
+    display: flex;
+    justify-content: center;
+    margin: 1.4rem 0;
+    & > iframe {
+      width: 800px;
+      height: 100%;
+    }
+  }
+}

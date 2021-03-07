@@ -7,6 +7,8 @@ import axios from 'axios'
 import BaseLayout from '@/components/layouts/BaseLayout'
 import Persons from '@/components/Person'
 import Trailer from '@/components/Trailer'
+import WatchProviders from '@/components/WatchProviders'
+
 import styles from '@/styles/Media_info.module.scss'
 
 const Title = ({ data, mediaType }): JSX.Element => {
@@ -90,6 +92,7 @@ const Title = ({ data, mediaType }): JSX.Element => {
                 <p>{`TMDB: ${data.vote_average}`}</p>
                 <p>{`IMDB: ${imdbData ? imdbData.ratings.rating : ''}`}</p>
               </div>
+              <WatchProviders mediaType={mediaType} mediaId={data.id} />
             </div>
           </div>
           <Trailer mediaId={data.id} mediaType={mediaType} />

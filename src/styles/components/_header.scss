@@ -147,23 +147,24 @@ $secondary: #4571ff;
     align-items: center;
     width: 66%;
     transform: translateX(100%);
-    transition: 0.5s ease-in;
+    transition: 0.4s ease-in;
     margin: 0;
     li {
       opacity: 0; //will animate
+      margin: 0;
       a {
         color: $principal;
       }
     }
     &.nav-active {
       li:nth-child(1) {
-        animation: navLinkFade 0.5s ease forwards 0.4s;
+        animation: navLinkFade 0.5s ease forwards 0.3s;
       }
       li:nth-child(2) {
-        animation: navLinkFade 0.5s ease forwards 0.6s;
+        animation: navLinkFade 0.5s ease forwards 0.4s;
       }
       li:nth-child(3) {
-        animation: navLinkFade 0.5s ease forwards 0.8s;
+        animation: navLinkFade 0.5s ease forwards 0.6s;
         margin-bottom: 150px;
       }
     }
