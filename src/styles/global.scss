@@ -52,24 +52,23 @@ body {
   }
 }
 .loading-container {
-  position: absolute;
+  position: fixed;
   right: 0;
   left: 0;
-  bottom: 0;
-  top: 60px;
-  z-index: 999;
+  top:60px;
+  bottom:0;
+  z-index: 9999;
   background-color: rgba(8, 8, 8, 0.9);
-  opacity: 0;
+  display: none;
   backdrop-filter: blur(2.5rem);
-  display: flex;
   flex-direction: column;
   align-items: center;
 }
-.visible{
-  opacity: 1 !important;
+.visible {
+  display: flex;
 }
 .loading {
   display: flex;
-  flex:1;
+  flex: 1;
   align-items: center;
 }

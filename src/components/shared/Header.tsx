@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import Link from 'next/link'
 
 import Search from '@/components/shared/Search'
@@ -8,15 +8,28 @@ import { HeaderContext } from '@/contexts/HeaderContext'
 const Header = (): JSX.Element => {
   const [isActive, setIsActive] = useState(false)
   const { contentType, changeContentType } = useContext(ContentTypeContext)
-  const { transparent } = useContext(HeaderContext)
-
+  const { transparent, toggleTransparency } = useContext(HeaderContext)
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [])
+  const onScroll = e => {
+    if (window.scrollY > 10) {
+      console.log('entrou aqui')
+      toggleTransparency(false)
+    } else {
+      toggleTransparency(true)
+    }
+  }
   const toggleBurger = () => {
     setIsActive(!isActive)
   }
   return (
     <nav className={!transparent ? 'nav-bar' : 'nav-bar transparent'}>
       <div className="nav-bar-logo">
-        <h4>MS - Filmes e Séries</h4>
+        <h1>MS - Filmes e Séries</h1>
       </div>
       <ul className={isActive ? 'nav-links nav-active' : 'nav-links'}>
         <li>

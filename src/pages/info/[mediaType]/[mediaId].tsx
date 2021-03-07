@@ -1,11 +1,12 @@
-import Head from 'next/head'
 import { useEffect, useState } from 'react'
+import Head from 'next/head'
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 import axios from 'axios'
 
 import BaseLayout from '@/components/layouts/BaseLayout'
 import Persons from '@/components/Person'
+import Trailer from '@/components/Trailer'
 import styles from '@/styles/Media_info.module.scss'
 
 const Title = ({ data, mediaType }): JSX.Element => {
@@ -87,11 +88,11 @@ const Title = ({ data, mediaType }): JSX.Element => {
 
               <div className={styles['vote-average']}>
                 <p>{`TMDB: ${data.vote_average}`}</p>
-                <p>{`IMDB: ${imdbData ? imdbData.ratings.rating : 0}`}</p>
+                <p>{`IMDB: ${imdbData ? imdbData.ratings.rating : ''}`}</p>
               </div>
             </div>
           </div>
-
+          <Trailer mediaId={data.id} mediaType={mediaType} />
           <div className={styles['cast-wrapper']}>
             <Persons mediaType={mediaType} mediaId={data.id} />
           </div>
