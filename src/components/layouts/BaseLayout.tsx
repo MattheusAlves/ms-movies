@@ -26,8 +26,8 @@ const BaseLayout: React.FC = (props: Props) => {
           <ReactLoading
             type="spinningBubbles"
             color="#4b45ff"
-            width="20%"
-            height="20%"
+            width="15%"
+            height="15%"
             className="loading"
           />
         </div>
