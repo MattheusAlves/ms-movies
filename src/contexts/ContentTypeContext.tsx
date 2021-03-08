@@ -1,5 +1,5 @@
-import React, { createContext, useState } from 'react'
-
+import React, { createContext, useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 interface ContentTypeContextData {
   contentType: string
   changeContentType: (string) => void
@@ -14,12 +14,18 @@ export const ContentTypeContext = createContext({} as ContentTypeContextData)
 export function ContentTypeProvider({
   children
 }: ContentTypeProviderProps): JSX.Element {
-  const [contentType, setContentType] = useState('movies')
+  const [contentType, setContentType] = useState('')
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  useEffect(() => {
+    setContentType(String(router.query.type))
+  }, [])
 
-  const changeContentType = (contentType: string) => {
-    setContentType(contentType)
-    setLoading(true)
+  const changeContentType = (newContentType: string) => {
+    setContentType(newContentType)
+    if (newContentType !== '' && newContentType !== contentType) {
+      setLoading(true)
+    }
   }
   const toggleLoading = (value: boolean) => setLoading(value)
   return (

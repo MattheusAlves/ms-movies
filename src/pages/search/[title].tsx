@@ -7,7 +7,6 @@ import BaseLayout from '@/components/layouts/BaseLayout'
 import BasePage from '@/components/layouts/BasePage'
 
 const Search = (props): JSX.Element => {
-  console.log(props)
   return (
     <BaseLayout>
       <BasePage callback={() => null}>

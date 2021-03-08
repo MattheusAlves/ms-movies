@@ -1,7 +1,12 @@
 .watch-provider {
+  &-wrapper{
+    display:flex;
+    flex-direction:row;
+    flex-wrap: wrap;
+  }
   &-wrapper > span {
     padding: 0.4rem;
-    margin-right: 0.2rem;
+    margin: 0 0.2rem .2rem 0;
     border-radius: 4px;
     border: 1px solid #4b45ff;
   }

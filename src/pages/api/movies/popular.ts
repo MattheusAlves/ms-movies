@@ -8,7 +8,7 @@ export default async function popular(
   const { page = 1 } = req.query
   try {
     const movies = await axios.get(
-      'https://api.themoviedb.org/4/discover/movie?sort_by=popularity.desc',
+      'https://api.themoviedb.org/4/discover/movie?sort_by=popularity.desc&language=pt-BR',
       {
         params: {
           api_key: '2d33c77063aa0a5a20bcf4682a1c151c',

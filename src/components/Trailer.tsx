@@ -21,7 +21,7 @@ export default function Trailer({ mediaType, mediaId }: Props): JSX.Element {
   return (
     <div className={styles['media-trailer']}>
       {loading ? (
-        <ReactLoading type="balls" color="#4b45ff" width="20%" height="20%" />
+        <ReactLoading type="cubes" color="#4b45ff" width="15%" height="15%" />
       ) : (
         URL && (
           <iframe

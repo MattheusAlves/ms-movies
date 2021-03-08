@@ -2,7 +2,6 @@ import { useEffect, useContext } from 'react'
 
 import RenderItems from '@/components/shared/RenderItems'
 import { useGetPopularSeries } from '@/actions/popular'
-import Loading from '@/components/shared/Loading'
 import LoadingCard from '@/components/shared/LoadingCard'
 import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 
@@ -28,8 +27,10 @@ const Series = (props: Props): JSX.Element => {
       setSize(props.index)
       props.setCurrentSize(props.index)
     }
-    toggleLoading(false)
   }, [props.index])
+  useEffect(() => {
+    toggleLoading(false)
+  }, [data])
   return (
     <>
       {data && <RenderItems data={data} />}

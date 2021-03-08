@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import Head from 'next/head'
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
@@ -10,9 +10,11 @@ import Trailer from '@/components/Trailer'
 import WatchProviders from '@/components/WatchProviders'
 
 import styles from '@/styles/Media_info.module.scss'
+import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 
 const Title = ({ data, mediaType }): JSX.Element => {
   const [imdbData, setImdbData] = useState(null)
+  const { toggleLoading } = useContext(ContentTypeContext)
   useEffect(() => {
     if (data.imdb_id) {
       axios
@@ -29,6 +31,7 @@ const Title = ({ data, mediaType }): JSX.Element => {
         .then(result => setImdbData(result.data))
         .catch(err => console.log(err.err))
     }
+    toggleLoading(false)
   }, [data])
   return (
     <BaseLayout>
@@ -41,10 +44,11 @@ const Title = ({ data, mediaType }): JSX.Element => {
             <div className={styles['media-presentation-poster-wrapper']}>
               <Image
                 src={`https://image.tmdb.org/t/p/w400${data.poster_path}`}
-                width={316}
-                height={400}
-                quality={80}
-                layout="responsive"
+                // width="100%"
+                // height={400}
+                quality={100}
+                layout="fill"
+                className={styles['media-presentation-poster']}
               />
             </div>
             <div className={styles['media-presentation-info']}>
@@ -108,8 +112,8 @@ const Title = ({ data, mediaType }): JSX.Element => {
 export const getServerSideProps: GetServerSideProps = async context => {
   const URL =
     context.params.mediaType === 'movie'
-      ? `https://api.themoviedb.org/3/movie/${context.params.mediaId}`
-      : `https://api.themoviedb.org/3/tv/${context.params.mediaId}`
+      ? `https://api.themoviedb.org/3/movie/${context.params.mediaId}?language=pt-BR`
+      : `https://api.themoviedb.org/3/tv/${context.params.mediaId}?language=pt-BR`
   const result = await axios.get(URL, {
     params: {
       api_key: process.env.API_KEY

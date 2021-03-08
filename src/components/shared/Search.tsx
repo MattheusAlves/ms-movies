@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { BsSearch } from 'react-icons/bs'
-
+import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 interface Props {
   rightNav: boolean
 }
@@ -11,6 +11,8 @@ const Search = (props: Props): JSX.Element => {
   const [isActive, setIsActive] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const router = useRouter()
+  const { changeContentType } = useContext(ContentTypeContext)
+
   const toggleActive = () => {
     if (searchQuery) {
       return handleSearch()
@@ -19,6 +21,7 @@ const Search = (props: Props): JSX.Element => {
   }
 
   const handleSearch = () => {
+    changeContentType('')
     router.push(`/search/${searchQuery}`)
   }
   return (

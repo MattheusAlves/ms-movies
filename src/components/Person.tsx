@@ -15,19 +15,6 @@ import styles from '@/styles/Media_info.module.scss'
 
 const Persons = ({ mediaType, mediaId }): JSX.Element => {
   const { data, error, loading } = useGetActors({ mediaType, mediaId })
-  // const [visibleSlides, setVisibleSlides] = useState(0)
-
-  // useEffect(() => {
-  //   console.log(window.innerWidth)
-  //   if (window.innerWidth > 1800) {
-  //     setVisibleSlides(4)
-  //   } else if (window.innerWidth > 1080 && window.innerWidth < 1550) {
-  //     setVisibleSlides(4)
-  //   } else if (window.innerWidth <= 800) {
-  //     setVisibleSlides(4)
-  //   }
-  // }, [data])
-
   return (
     <div className={styles['characters-container']}>
       {data && (
@@ -55,7 +42,7 @@ const Persons = ({ mediaType, mediaId }): JSX.Element => {
                           width={170}
                           height={250}
                           quality={75}
-                          className={styles.loading}
+                          className={styles.poster}
                           onLoad={e =>
                             (e.target as HTMLImageElement).parentElement.parentElement.classList.remove(
                               styles.loading

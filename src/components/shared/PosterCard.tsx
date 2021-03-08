@@ -1,7 +1,8 @@
+import { useContext } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { isMobile, BrowserView } from 'react-device-detect'
-
+import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 interface Props {
   src: string
   info: {
@@ -21,17 +22,17 @@ const PosterCard = (props: Props): JSX.Element => {
     image.target.src = '/404.png'
     image.target.srcset = '/404.png'
   }
+  const { toggleLoading } = useContext(ContentTypeContext)
+  const handlePosterClick = () => {
+    toggleLoading(true)
+    router.push(
+      `/info/${
+        info.mediaType || (router.query.type === 'movies' ? 'movie' : 'tv')
+      }/${info.mediaId}`
+    )
+  }
   return (
-    <div
-      className="poster-wrapper"
-      onClick={() =>
-        router.push(
-          `/info/${
-            info.mediaType || router.query.type === 'movies' ? 'movie' : 'tv'
-          }/${info.mediaId}`
-        )
-      }
-    >
+    <div className="poster-wrapper" onClick={handlePosterClick}>
       <Image
         src={src}
         width={256}

@@ -17,7 +17,6 @@ const Header = (): JSX.Element => {
   }, [])
   const onScroll = e => {
     if (window.scrollY > 10) {
-      console.log('entrou aqui')
       toggleTransparency(false)
     } else {
       toggleTransparency(true)

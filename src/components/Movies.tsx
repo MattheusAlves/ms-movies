@@ -2,7 +2,6 @@ import { useEffect, useContext } from 'react'
 
 import RenderItems from '@/components/shared/RenderItems'
 import { useGetPopularMovies } from '@/actions/popular'
-import Loading from '@/components/shared/Loading'
 import LoadingCard from '@/components/shared/LoadingCard'
 import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 interface Props {
@@ -11,14 +10,7 @@ interface Props {
   setCurrentSize: (number) => void
 }
 const Movies = (props: Props): JSX.Element => {
-  const {
-    data,
-    error,
-    // loading,
-    size,
-    setSize,
-    isValidating
-  } = useGetPopularMovies({
+  const { data, setSize, isValidating } = useGetPopularMovies({
     initialData: props.initialData || null
   })
   const { loading, toggleLoading } = useContext(ContentTypeContext)
@@ -27,9 +19,10 @@ const Movies = (props: Props): JSX.Element => {
       setSize(props.index)
       props.setCurrentSize(props.index)
     }
-    toggleLoading(false)
   }, [props.index])
-
+  useEffect(() => {
+    toggleLoading(false)
+  }, [data])
   return (
     <>
       {data && <RenderItems data={data} />}
