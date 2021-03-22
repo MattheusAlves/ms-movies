@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
@@ -10,11 +10,9 @@ import Trailer from '@/components/Trailer'
 import WatchProviders from '@/components/WatchProviders'
 
 import styles from '@/styles/Media_info.module.scss'
-import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 
 const Title = ({ data, mediaType }): JSX.Element => {
   const [imdbData, setImdbData] = useState(null)
-  const { toggleLoading } = useContext(ContentTypeContext)
   useEffect(() => {
     if (data.imdb_id) {
       axios
@@ -31,7 +29,6 @@ const Title = ({ data, mediaType }): JSX.Element => {
         .then(result => setImdbData(result.data))
         .catch(err => console.log(err.err))
     }
-    toggleLoading(false)
   }, [data])
   return (
     <BaseLayout>
@@ -44,8 +41,6 @@ const Title = ({ data, mediaType }): JSX.Element => {
             <div className={styles['media-presentation-poster-wrapper']}>
               <Image
                 src={`https://image.tmdb.org/t/p/w400${data.poster_path}`}
-                // width="100%"
-                // height={400}
                 quality={100}
                 layout="fill"
                 className={styles['media-presentation-poster']}
@@ -77,9 +72,10 @@ const Title = ({ data, mediaType }): JSX.Element => {
                     .join('/')}`}</span>
                 )}
               </div>
-
-              {data.budget && (
+              {console.log('budget', data.budget)}
+              {!!data.budget && data.budget > 0 && (
                 <div className={styles.budget}>
+                  {console.log(data.budget)}
                   <span>{`Orçamento: ${parseInt(data.budget).toLocaleString(
                     'US'
                   )} USD`}</span>

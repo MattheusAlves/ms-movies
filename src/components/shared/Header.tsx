@@ -54,6 +54,12 @@ const Header = (): JSX.Element => {
             </a>
           </Link>
         </li>
+        <span className="separator" />
+        <li>
+          <Link href="/to-watch">
+            <a>Minha lista</a>
+          </Link>
+        </li>
       </ul>
       <div className="burger" onClick={() => toggleBurger()}>
         <div

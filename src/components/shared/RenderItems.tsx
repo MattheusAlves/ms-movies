@@ -12,11 +12,12 @@ const RenderItems = (props): JSX.Element => {
           title: title.title || title.name,
           overview: title.overview,
           releaseDate: title.release_date,
-          voteAverage: title.vote_average,
-          mediaType: title.media_type,
-          mediaId: title.id
+          voteAverage: title.vote_average || title.voteAverage,
+          mediaType: title.media_type || title.mediaType,
+          mediaId: title.id || title.mediaId,
+          poster_path: title.poster_path
         }}
-        key={title.id}
+        key={title.id || title.mediaId}
       />
     ))
   )

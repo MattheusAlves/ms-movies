@@ -2,9 +2,15 @@ import React from 'react'
 import styles from '@/styles/Media_info.module.scss'
 import { useGetWatchProviders } from '@/actions/watchProviders'
 
-export default function WatchProviders({ mediaType, mediaId }) {
+interface Props {
+  mediaType: string
+  mediaId: string
+}
+export default function WatchProviders({
+  mediaType,
+  mediaId
+}: Props): JSX.Element {
   const { data, error, loading } = useGetWatchProviders({ mediaType, mediaId })
-  console.log(data)
   return data?.results?.BR?.flatrate && data.results.BR.flatrate.length ? (
     <div className={styles['watch-provider-container']}>
       <p>Disponivel ▼</p>

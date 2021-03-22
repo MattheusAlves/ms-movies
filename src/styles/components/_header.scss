@@ -62,6 +62,23 @@ $secondary: #4571ff;
     font-size: 22px;
     outline: none;
   }
+  li:nth-child(5) {
+    margin: 0;
+  }
+  li:nth-child(5) > a {
+    font-size: 22px;
+    font-weight: normal;
+    letter-spacing: 0;
+    color: #45d3ff;
+  }
+  & > .separator {
+    background-color: #fff;
+    height: 100%;
+    min-height: 50px;
+    max-height: 60px;
+    width: 1px;
+    margin: 0 1rem;
+  }
 }
 .burger {
   display: none;
@@ -112,6 +129,9 @@ $secondary: #4571ff;
 }
 //cellphones
 @media screen and(max-width:768px) {
+  .separator {
+    display: none;
+  }
   body {
     overflow-x: hidden;
     min-height: 100vh;
@@ -165,6 +185,9 @@ $secondary: #4571ff;
       }
       li:nth-child(3) {
         animation: navLinkFade 0.5s ease forwards 0.6s;
+      }
+      li:nth-child(5) {
+        animation: navLinkFade 0.8s ease forwards 0.6s;
         margin-bottom: 150px;
       }
     }

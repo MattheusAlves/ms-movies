@@ -3,6 +3,7 @@
   overflow: hidden;
   margin: 0;
   padding: 0;
+  z-index: 0;
 }
 .poster-info {
   &-container {
@@ -60,14 +61,40 @@
       background-color: #4b45ff;
       position: absolute;
       top: 0;
-      right: 0;
+      left: 0;
       padding: 10px;
       height: 15px;
       width: 15px;
       border-radius: 3px;
-      margin: 4px 7px 0px 0px;
+      margin: 4px 0px 0px 7px;
       border: none;
     }
+  }
+  &-add_to_watch_list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 11px;
+    width: 11px;
+    margin: 4px 7px 0px 0px;
+    border-radius: 3px;
+    font-size: 2.5em;
+    border:none;
+    color:white;
+    border:2px solid $principal;
+    padding:10px;
+    z-index: 999;
+    &-heart{
+      font-size: 1.5rem;
+      color:red;
+    }
+  }
+  &-add_to_watch_list:hover{
+    background: #4b45ff;
+    color:#fff;
   }
 }
 
