@@ -16,8 +16,8 @@ interface ToWatchList {
   title: string
   overview: string
   mediaType: string
-  ['release_date']: string
-  src: string
+  releaseDate: string
+  ['poster_path']: string
 }
 
 export const ToWatchListContext = createContext({} as ToWatchListContextData)

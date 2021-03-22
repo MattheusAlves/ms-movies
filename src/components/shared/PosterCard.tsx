@@ -11,7 +11,7 @@ interface Props {
     overview: string
     releaseDate: string
     mediaType: string
-    mediaId: string
+    mediaId: number
     ['poster_path']: string
   }
 }
