@@ -11,7 +11,7 @@ export default async function popular(
       'https://api.themoviedb.org/4/discover/tv?sort_by=popularity.desc&language=pt-BR',
       {
         params: {
-          api_key: '2d33c77063aa0a5a20bcf4682a1c151c',
+          api_key: process.env.API_KEY,
           page: page || 1
         }
       }

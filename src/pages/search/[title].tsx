@@ -26,7 +26,7 @@ export default Search
 export const getServerSideProps: GetServerSideProps = async context => {
   const result = await axios.get('https://api.themoviedb.org/4/search/multi/', {
     params: {
-      api_key: '2d33c77063aa0a5a20bcf4682a1c151c',
+      api_key: process.env.API_KEY,
       query: context.params.title
     }
   })

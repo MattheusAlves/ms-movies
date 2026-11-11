@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
@@ -11,25 +10,7 @@ import WatchProviders from '@/components/WatchProviders'
 
 import styles from '@/styles/Media_info.module.scss'
 
-const Title = ({ data, mediaType }): JSX.Element => {
-  const [imdbData, setImdbData] = useState(null)
-  useEffect(() => {
-    if (data.imdb_id) {
-      axios
-        .get('https://imdb8.p.rapidapi.com/title/get-overview-details', {
-          headers: {
-            'x-rapidapi-key':
-              '908a629198mshdf8842af79b611dp14c1f5jsnf5e99182c91b',
-            'x-rapidapi-host': 'imdb8.p.rapidapi.com'
-          },
-          params: {
-            tconst: data.imdb_id
-          }
-        })
-        .then(result => setImdbData(result.data))
-        .catch(err => console.log(err.err))
-    }
-  }, [data])
+const Title = ({ data, mediaType, imdbRating }): JSX.Element => {
   return (
     <BaseLayout>
       <div className={styles['media-container']}>
@@ -90,7 +71,7 @@ const Title = ({ data, mediaType }): JSX.Element => {
 
               <div className={styles['vote-average']}>
                 <p>{`TMDB: ${data.vote_average}`}</p>
-                <p>{`IMDB: ${imdbData ? imdbData.ratings.rating : ''}`}</p>
+                {imdbRating != null && <p>{`IMDB: ${imdbRating}`}</p>}
               </div>
               <WatchProviders mediaType={mediaType} mediaId={data.id} />
             </div>
@@ -115,7 +96,31 @@ export const getServerSideProps: GetServerSideProps = async context => {
       api_key: process.env.API_KEY
     }
   })
-  return { props: { data: result.data, mediaType: context.params.mediaType } }
+  let imdbRating = null
+  if (result.data.imdb_id && process.env.RAPIDAPI_KEY) {
+    try {
+      const imdbResult = await axios.get(
+        'https://imdb8.p.rapidapi.com/title/get-overview-details',
+        {
+          headers: {
+            'x-rapidapi-key': process.env.RAPIDAPI_KEY,
+            'x-rapidapi-host': 'imdb8.p.rapidapi.com'
+          },
+          params: { tconst: result.data.imdb_id },
+          timeout: 3000
+        }
+      )
+      const rating = imdbResult.data?.ratings?.rating
+      if (typeof rating === 'number' && Number.isFinite(rating)) {
+        imdbRating = rating
+      }
+    } catch {
+      // IMDb ratings are optional; keep the detail page available on failure.
+    }
+  }
+  return {
+    props: { data: result.data, mediaType: context.params.mediaType, imdbRating }
+  }
 }
 
 export default Title
