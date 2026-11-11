@@ -1,14 +1,16 @@
 import useSWR from 'swr'
 import fetcher from '@/util/fetcher'
 
-interface SwrResult {
-  data?: Record<string, any>
-  error?: Record<string, any>
-  loading?: boolean
+interface Actor {
+  id: number
+  profile_path: string | null
+  original_name?: string
+  name?: string
+  character?: string
 }
 
-export const useGetActors = ({ mediaType, mediaId }): SwrResult => {
-  const { data, error, ...rest } = useSWR(
+export const useGetActors = ({ mediaType, mediaId }) => {
+  const { data, error, ...rest } = useSWR<Actor[]>(
     `/api/cast/${mediaType}/${mediaId}`,
     fetcher
   )

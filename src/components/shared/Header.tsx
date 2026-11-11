@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useContext, useEffect } from 'react'
 import Link from 'next/link'
 
@@ -7,7 +9,7 @@ import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 const Header = (): React.JSX.Element => {
   const [isActive, setIsActive] = useState(false)
   const [transparent, setTransparent] = useState(true)
-  const { contentType, changeContentType } = useContext(ContentTypeContext)
+  const { contentType } = useContext(ContentTypeContext)
   useEffect(() => {
     const onScroll = () => setTransparent(window.scrollY <= 10)
     window.addEventListener('scroll', onScroll)
@@ -21,7 +23,7 @@ const Header = (): React.JSX.Element => {
   return (
     <nav className={!transparent ? 'nav-bar' : 'nav-bar transparent'}>
       <div className="nav-bar-logo">
-        <h1>MS - Filmes e Séries</h1>
+        <h1>MS - Movies and Series</h1>
       </div>
       <ul className={isActive ? 'nav-links nav-active' : 'nav-links'}>
         <li>
@@ -31,26 +33,24 @@ const Header = (): React.JSX.Element => {
           <Link
             href="/movies"
             className={contentType === 'movies' ? 'currentLink' : ''}
-            onClick={() => changeContentType('movies')}
           >
-            Filmes
+            Movies
           </Link>
         </li>
         <li>
           <Link
             href="/series"
             className={contentType === 'series' ? 'currentLink' : ''}
-            onClick={() => changeContentType('series')}
           >
-            Séries
+            Series
           </Link>
         </li>
         <span className="separator" />
         <li>
-          <Link href="/to-watch">Minha lista</Link>
+          <Link href="/to-watch">My watchlist</Link>
         </li>
       </ul>
-      <div className="burger" onClick={() => toggleBurger()}>
+      <button type="button" className="burger" onClick={() => toggleBurger()} aria-label="Toggle navigation" aria-expanded={isActive}>
         <div
           className={isActive ? 'toggle burger-line1' : 'burger-line1'}
         ></div>
@@ -60,7 +60,7 @@ const Header = (): React.JSX.Element => {
         <div
           className={isActive ? 'toggle burger-line3' : 'burger-line3'}
         ></div>
-      </div>
+      </button>
     </nav>
   )
 }

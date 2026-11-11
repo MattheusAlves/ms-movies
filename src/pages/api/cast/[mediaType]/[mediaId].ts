@@ -8,7 +8,9 @@ export default async function cast(
 ): Promise<void> {
   const { mediaType, mediaId } = req.query
   try {
-    const data = await tmdbGet(`3/${mediaType}/${mediaId}/credits`)
+    const data = await tmdbGet<{ cast: Array<{ known_for_department: string; profile_path: string | null }> }>(
+      `3/${mediaType}/${mediaId}/credits`, { language: 'en-US' }
+    )
     const actors = data.cast
       .filter(
         castMember =>

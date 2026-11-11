@@ -14,7 +14,10 @@ jobs:
           node-version: 24
       - run: npm install --global yarn@1.22.22
       - run: yarn install --frozen-lockfile
+      - run: yarn lint
       - run: yarn typecheck
       - run: yarn test
       - run: yarn build:mock
       - run: yarn test:smoke
+      - run: yarn playwright install --with-deps --no-shell chromium
+      - run: yarn test:e2e

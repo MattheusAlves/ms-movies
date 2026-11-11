@@ -8,20 +8,19 @@ interface Props {
 
 const BasePage = ({ children, callback = () => null }: Props): React.JSX.Element => {
   useEffect(() => {
+    const onScroll = debounce(e => {
+      if (
+        e.target.scrollingElement.scrollTop + window.innerHeight + 200 >=
+        e.target.scrollingElement.scrollHeight
+      ) {
+        callback()
+      }
+    }, 100)
     document.addEventListener('scroll', onScroll)
     return () => {
       document.removeEventListener('scroll', onScroll)
     }
-  }, [])
-
-  const onScroll = debounce(e => {
-    if (
-      e.target.scrollingElement.scrollTop + window.innerHeight + 200 >=
-      e.target.scrollingElement.scrollHeight
-    ) {
-      callback()
-    }
-  }, 100)
+  }, [callback])
   return <div className="base-page">{children}</div>
 }
 

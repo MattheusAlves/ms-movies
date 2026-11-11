@@ -1,6 +1,4 @@
 import type {
-  GetServerSidePropsContext,
-  GetStaticPropsContext,
   NextApiRequest,
   NextApiResponse
 } from 'next'
@@ -30,19 +28,4 @@ export const recorder = (): RecordedResponse => {
     }
   }
   return res as unknown as RecordedResponse
-}
-
-export const ssvContext = (params: ParsedUrlQuery): GetServerSidePropsContext =>
-  ({ params } as unknown as GetServerSidePropsContext)
-
-export const ssgContext = (params: ParsedUrlQuery): GetStaticPropsContext =>
-  ({ params } as unknown as GetStaticPropsContext)
-
-// Unwraps `{ props }` from the GetServerSidePropsResult/GetStaticPropsResult
-// union (the other branch is `redirect`, never produced by these pages).
-// Loaders are typed to allow a sync return, so accept both shapes.
-export const propsOf = async (loader: unknown): Promise<Record<string, any>> => {
-  const result = (await loader) as { props?: Record<string, any> }
-  if (!result?.props) throw new Error('loader returned no props')
-  return result.props
 }

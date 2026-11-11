@@ -4,13 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const { axiosGet } = vi.hoisted(() => ({ axiosGet: vi.fn() }))
 vi.mock('axios', () => ({ default: { get: axiosGet } }))
 
-// Namespace imports: page modules export the component as default plus the
-// data loaders.
-import * as discovery from '@/pages/[type]'
-import * as search from '@/pages/search/[title]'
-import * as detail from '@/pages/info/[mediaType]/[mediaId]'
-
-import { propsOf, ssgContext, ssvContext } from './helpers'
+import { loadDiscoveryData } from '@/app/_discovery/discovery-data'
+import * as moviesPage from '@/app/movies/page'
+import * as seriesPage from '@/app/series/page'
+import { searchTitles } from '@/app/search/[title]/search-data'
+import { isValidTitleParams, loadTitle } from '@/app/info/[mediaType]/[mediaId]/detail-data'
+import { dynamic as detailRendering } from '@/app/info/[mediaType]/[mediaId]/page'
 
 beforeEach(() => {
   axiosGet.mockReset()
@@ -22,9 +21,9 @@ describe('data pages use the server TMDB key', () => {
     axiosGet.mockResolvedValue({ data: { results: [] } })
     vi.stubEnv('API_KEY', 'test-tmdb-key')
 
-    await discovery.getStaticProps(ssgContext({ type: 'movies' }))
-    await discovery.getStaticProps(ssgContext({ type: 'series' }))
-    await search.getServerSideProps(ssvContext({ title: 'space' }))
+    await loadDiscoveryData('movies')
+    await loadDiscoveryData('series')
+    await searchTitles('space')
 
     expect(axiosGet).toHaveBeenCalledTimes(3)
     for (const call of axiosGet.mock.calls) {
@@ -32,7 +31,9 @@ describe('data pages use the server TMDB key', () => {
     }
     expect(axiosGet.mock.calls[0][0]).toBe('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc')
     expect(axiosGet.mock.calls[1][0]).toBe('https://api.themoviedb.org/3/discover/tv?sort_by=popularity.desc')
+    expect(axiosGet.mock.calls[2][0]).toBe('https://api.themoviedb.org/3/search/multi')
     expect(axiosGet.mock.calls[2][1].params.query).toBe('space')
+    expect(axiosGet.mock.calls[2][1].params.language).toBe('en-US')
   })
 
   it('discovery preserves the TMDB page shape and revalidate window', async () => {
@@ -43,12 +44,11 @@ describe('data pages use the server TMDB key', () => {
     }
     axiosGet.mockResolvedValue({ data: page })
 
-    const props = await propsOf(discovery.getStaticProps(ssgContext({ type: 'movies' })))
-    expect(props).toEqual({ initialData: [page] })
-    expect(await discovery.getStaticPaths(ssgContext({}))).toEqual({
-      paths: [{ params: { type: 'movies' } }, { params: { type: 'series' } }],
-      fallback: false
-    })
+    expect(await loadDiscoveryData('movies')).toEqual([page])
+    expect(moviesPage.revalidate).toBe(5600)
+    expect(seriesPage.revalidate).toBe(5600)
+    expect(moviesPage.dynamic).toBe('force-static')
+    expect(seriesPage.dynamic).toBe('force-static')
   })
 })
 
@@ -60,9 +60,7 @@ describe('detail page IMDb rating', () => {
     vi.stubEnv('API_KEY', 'test-tmdb-key')
     vi.stubEnv('RAPIDAPI_KEY', 'test-rapidapi-key')
 
-    const props = await propsOf(
-      detail.getServerSideProps(ssvContext({ mediaType: 'movie', mediaId: '1' }))
-    )
+    const props = await loadTitle('movie', '1')
 
     expect(axiosGet.mock.calls[0][1].params.api_key).toBe('test-tmdb-key')
     expect(axiosGet.mock.calls[1][1].headers['x-rapidapi-key']).toBe('test-rapidapi-key')
@@ -81,12 +79,19 @@ describe('detail page IMDb rating', () => {
       vi.stubEnv('API_KEY', 'test-tmdb-key')
       vi.stubEnv('RAPIDAPI_KEY', rapidKey ?? '')
 
-      const props = await propsOf(
-        detail.getServerSideProps(ssvContext({ mediaType: 'movie', mediaId: '1' }))
-      )
+      const props = await loadTitle('movie', '1')
       expect(props.imdbRating).toBe(null)
       expect(axiosGet).toHaveBeenCalledTimes(rapidKey ? 2 : 1)
       axiosGet.mockReset()
+    }
+  })
+
+  it('renders on request and accepts only movie or TV numeric identifiers', () => {
+    expect(detailRendering).toBe('force-dynamic')
+    expect(isValidTitleParams('movie', '101')).toBe(true)
+    expect(isValidTitleParams('tv', '202')).toBe(true)
+    for (const [type, id] of [['person', '101'], ['movie', '0'], ['movie', '../1'], ['tv', 'abc']]) {
+      expect(isValidTitleParams(type, id)).toBe(false)
     }
   })
 })
@@ -99,10 +104,10 @@ describe('page errors do not expose upstream request credentials', () => {
     vi.stubEnv('API_KEY', secret)
 
     const cases: Array<[unknown, RegExp]> = [
-      [discovery.getStaticProps(ssgContext({ type: 'movies' })), /Unable to load discovery data/],
-      [search.getServerSideProps(ssvContext({ title: 'space' })), /Unable to load search data/],
+      [loadDiscoveryData('movies'), /Unable to load discovery data/],
+      [searchTitles('space'), /Unable to load search data/],
       [
-        detail.getServerSideProps(ssvContext({ mediaType: 'movie', mediaId: '1' })),
+        loadTitle('movie', '1'),
         /Unable to load title data/
       ]
     ]

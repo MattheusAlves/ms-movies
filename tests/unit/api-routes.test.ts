@@ -37,7 +37,7 @@ describe('API routes proxy TMDB', () => {
       for (const query of [{}, { page: '' }]) {
         const fallback = recorder()
         await handler(apiRequest(query), fallback)
-        expect(axiosGet.mock.calls.at(-1)[1].params.page).toBe(1)
+        expect(axiosGet.mock.calls.at(-1)![1].params.page).toBe(1)
         expect(fallback.code).toBe(200)
       }
     }
@@ -46,7 +46,7 @@ describe('API routes proxy TMDB', () => {
     expect(axiosGet.mock.calls[0][1].params).toEqual({
       api_key: 'test-key',
       sort_by: 'popularity.desc',
-      language: 'pt-BR',
+      language: 'en-US',
       page: '7'
     })
   })
@@ -102,7 +102,7 @@ describe('API routes proxy TMDB', () => {
         res
       )
       expect(res.code).toBe(200)
-      expect(axiosGet.mock.calls.at(-1)[1].params.api_key).toBe('test-key')
+      expect(axiosGet.mock.calls.at(-1)![1].params.api_key).toBe('test-key')
     }
   })
 })

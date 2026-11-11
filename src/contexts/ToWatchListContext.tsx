@@ -11,7 +11,7 @@ import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 import { MediaSummary } from '@/util/media'
 
 interface ToWatchListContextData {
-  toWatchList: Array<MediaSummary>
+  toWatchList: Array<MediaSummary> | null
   itemsId: Array<number>
   toggleWatchItem: (item: MediaSummary) => void
 }
@@ -56,6 +56,8 @@ export function ToWatchListProvider({
 
   useEffect(() => {
     const savedList = Cookies.get('ToWatchList')
+    // Read after hydration so server and browser initially render the same UI.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedList) setToWatchList(JSON.parse(savedList))
   }, [])
 

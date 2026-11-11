@@ -1,5 +1,7 @@
+'use client'
+
 import Image from 'next/image'
-import { isMobile, BrowserView } from 'react-device-detect'
+import { useEffect, useState } from 'react'
 import { FcNext } from 'react-icons/fc'
 import { IconContext } from 'react-icons'
 import {
@@ -14,14 +16,23 @@ import { useGetActors } from '@/actions/actors'
 import styles from '@/styles/Media_info.module.scss'
 
 const Persons = ({ mediaType, mediaId }): React.JSX.Element => {
-  const { data, error, loading } = useGetActors({ mediaType, mediaId })
+  const { data } = useGetActors({ mediaType, mediaId })
+  const [isNarrow, setIsNarrow] = useState(false)
+  useEffect(() => {
+    if (!window.matchMedia) return
+    const query = window.matchMedia('(max-width: 762px)')
+    const update = () => setIsNarrow(query.matches)
+    update()
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
   return (
     <div className={styles['characters-container']}>
       {data && (
         <CarouselProvider
           naturalSlideHeight={250}
           naturalSlideWidth={170}
-          visibleSlides={isMobile ? 3 : 6}
+          visibleSlides={isNarrow ? 3 : 6}
           totalSlides={data.length}
           className={styles['characters-slider-provider']}
           step={3} // the number of slides to move when pressing the button next
@@ -66,13 +77,11 @@ const Persons = ({ mediaType, mediaId }): React.JSX.Element => {
                 )
             )}
           </Slider>
-          <BrowserView>
-            <ButtonNext className={styles['characters-slider-button-next']}>
-              <IconContext.Provider value={{ color: '#4B45FF' }}>
-                <FcNext size={30} />
-              </IconContext.Provider>
-            </ButtonNext>
-          </BrowserView>
+          <ButtonNext className={styles['characters-slider-button-next']} aria-label="Next cast members">
+            <IconContext.Provider value={{ color: '#4B45FF' }}>
+              <FcNext size={30} />
+            </IconContext.Provider>
+          </ButtonNext>
         </CarouselProvider>
       )}
     </div>

@@ -2,6 +2,8 @@
 
 .nav-bar {
   position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -28,6 +30,9 @@
     z-index: 99;
     & > h1 {
       font-weight: 500;
+      font-size: 1em;
+      margin: 0;
+      white-space: nowrap;
     }
   }
 }
@@ -80,6 +85,8 @@
 .burger {
   display: none;
   padding: 5px;
+  border: 0;
+  background: transparent;
   div {
     width: 25px;
     height: 3px;

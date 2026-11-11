@@ -27,12 +27,12 @@ describe('useGetPopular', () => {
       })
       const { result } = renderHook(() => useGetPopular(resource, { initialData }))
 
-      const getKey = useSWRInfinite.mock.calls.at(-1)[0]
+      const getKey = useSWRInfinite.mock.calls.at(-1)![0]
       expect(getKey(0)).toBe(`${path}?page=1`)
       expect(getKey(3)).toBe(`${path}?page=4`)
       expect(getKey(6)).toBe(`${path}?page=7`)
-      expect(useSWRInfinite.mock.calls.at(-1)[1]).toBe(fetcher)
-      expect(useSWRInfinite.mock.calls.at(-1)[2]).toEqual({
+      expect(useSWRInfinite.mock.calls.at(-1)![1]).toBe(fetcher)
+      expect(useSWRInfinite.mock.calls.at(-1)![2]).toEqual({
         initialSize: 4,
         fallbackData: initialData,
         persistSize: false

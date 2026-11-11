@@ -1,10 +1,10 @@
-# MS - Filmes e Séries
+# MS - Movies and Series
 
 ### Look for information about movies and TV shows
 
 **MS is a responsive website built with React, Next.js, SWR, SASS and serverless functions that query imdb and tmdb APIs**
 
-[MS - Filmes e Séries](https://ms-movies.vercel.app/)
+[MS - Movies and Series](https://ms-movies.vercel.app/)
 
 ## Local setup
 
@@ -15,7 +15,9 @@
 
 The application uses Next.js 16 and React 19. See the [modernization plan](MODERNIZATION_PLAN.md) for the remaining work. `API_KEY` is required for the production build as well as at runtime, since discovery pages are generated during the build. Configure server-only environment variables in the deployment platform; do not prefix them with `NEXT_PUBLIC_` or commit real values.
 
-Run `yarn typecheck` and `yarn test` for the current automated checks. To check production rendering without provider credentials, run `yarn build:mock` followed by `yarn test:smoke`. The mock build writes fixture data to `.next` and must not be deployed; run `yarn build` with a real key for a deployment build. These tests mock external APIs and do not replace browser-based testing of the main flows.
+Run `yarn lint`, `yarn typecheck`, and `yarn test` for the automated checks. `typecheck` regenerates Next.js route types before running TypeScript. To check production rendering without provider credentials, run `yarn build:mock` followed by `yarn test:smoke`. For browser interaction checks, install Chromium with `yarn playwright install --no-shell chromium` and run `yarn test:e2e` against that same mock build. On Linux, Playwright's `--with-deps` option installs required system libraries.
+
+The mock build writes fixture data to `.next` and must not be deployed; run `yarn build` with a real key for a deployment build. Smoke and browser tests use mocked provider responses and do not replace testing with real TMDB data. The browser tests start their own fixture server on port 3210; set `E2E_PORT` if that port is in use.
 
 **Security:** Earlier versions of this repository contained TMDB and RapidAPI credentials. Rotate or revoke them in the provider dashboards and review account usage. Removing keys from source does not invalidate them or remove them from Git history.
 

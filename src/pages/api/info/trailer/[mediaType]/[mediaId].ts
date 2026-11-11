@@ -8,7 +8,7 @@ export default async function trailer(
 ): Promise<void> {
   const { mediaType, mediaId } = req.query
   try {
-    const data = await tmdbGet(`3/${mediaType}/${mediaId}/videos`)
+    const data = await tmdbGet(`3/${mediaType}/${mediaId}/videos`, { language: 'en-US' })
     res.status(200).json(data)
   } catch (e) {
     res.status(e.response?.status ?? 500).json({ message: 'Api error' })

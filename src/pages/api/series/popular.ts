@@ -10,7 +10,7 @@ export default async function popular(
   try {
     const data = await tmdbGet('3/discover/tv', {
       sort_by: 'popularity.desc',
-      language: 'pt-BR',
+      language: 'en-US',
       page: page || 1
     })
     res.status(200).json(data)

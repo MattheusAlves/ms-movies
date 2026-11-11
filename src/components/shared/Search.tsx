@@ -1,17 +1,17 @@
-import { useRouter } from 'next/router'
-import { useState, useEffect, useContext } from 'react'
+import { useNavigation } from '@/contexts/NavigationContext'
+import { useState, useEffect } from 'react'
 import { BsSearch } from 'react-icons/bs'
-import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 interface Props {
   rightNav: boolean
 }
 const Search = (props: Props): React.JSX.Element => {
   const isNavActive = props.rightNav
-  useEffect(() => setIsActive(false), [isNavActive])
   const [isActive, setIsActive] = useState(false)
+  // Closing or opening the mobile menu resets the search control.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setIsActive(false), [isNavActive])
   const [searchQuery, setSearchQuery] = useState('')
-  const router = useRouter()
-  const { changeContentType } = useContext(ContentTypeContext)
+  const router = useNavigation()
 
   const toggleActive = () => {
     if (searchQuery) {
@@ -24,7 +24,6 @@ const Search = (props: Props): React.JSX.Element => {
     event?.preventDefault()
     const query = searchQuery.trim()
     if (!query) return
-    changeContentType('')
     router.push(`/search/${encodeURIComponent(query)}`)
   }
   return (
@@ -34,6 +33,7 @@ const Search = (props: Props): React.JSX.Element => {
           type="search"
           className={isActive ? 'search-input active' : 'search-input'}
           placeholder="Search"
+          aria-label="Search movies and series"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
         />

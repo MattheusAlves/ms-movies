@@ -13,8 +13,19 @@ export interface MediaSummary {
   backdropPath: string
 }
 
+interface RawMediaItem extends Partial<MediaSummary> {
+  id?: number
+  name?: string
+  release_date?: string | null
+  first_air_date?: string | null
+  vote_average?: number
+  media_type?: string
+  poster_path?: string | null
+  backdrop_path?: string | null
+}
+
 export function normalizeMediaItem(
-  raw: Record<string, any>
+  raw: RawMediaItem
 ): MediaSummary {
   return {
     title: raw.title || raw.name || '',
@@ -23,7 +34,9 @@ export function normalizeMediaItem(
       raw.releaseDate || raw.release_date || raw.first_air_date || '',
     voteAverage: raw.voteAverage ?? raw.vote_average ?? 0,
     mediaType: raw.mediaType || raw.media_type || '',
-    mediaId: raw.mediaId ?? raw.id,
+    // Missing IDs are retained for compatibility with legacy persisted data;
+    // validation of stored entries is planned separately.
+    mediaId: (raw.mediaId ?? raw.id) as number,
     // `poster_path` also covers watchlist items saved by older versions.
     posterPath: raw.posterPath || raw.poster_path || '',
     backdropPath: raw.backdropPath || raw.backdrop_path || ''

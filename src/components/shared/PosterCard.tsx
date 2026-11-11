@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/router'
-import { BrowserView } from 'react-device-detect'
+import { useNavigation } from '@/contexts/NavigationContext'
+import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 import { ToWatchListContext } from '@/contexts/ToWatchListContext'
 import { MediaSummary } from '@/util/media'
 interface Props {
@@ -11,13 +11,14 @@ interface Props {
 
 const PosterCard = (props: Props): React.JSX.Element => {
   const { src, info } = props
-  const router = useRouter()
+  const router = useNavigation()
+  const { contentType } = useContext(ContentTypeContext)
   const { toggleWatchItem, itemsId } = useContext(ToWatchListContext)
   const [imageError, setImageError] = useState(false)
   const handlePosterClick = () => {
     router.push(
       `/info/${
-        info.mediaType || (router.query.type === 'movies' ? 'movie' : 'tv')
+        info.mediaType || (contentType === 'movies' ? 'movie' : 'tv')
       }/${info.mediaId}`
     )
   }
@@ -34,25 +35,28 @@ const PosterCard = (props: Props): React.JSX.Element => {
         alt={info.title || ''}
         onError={() => setImageError(true)}
       />
-      <BrowserView className="poster-info-container">
+      <div className="poster-info-container">
         <span className="poster-info-vote_avarage-wrapper">
           <p className="poster-info-vote_avarage">{info.voteAverage || ''}</p>
         </span>
-        <span
+        <button
+          type="button"
           className="poster-info-add_to_watch_list"
           onClick={handleToggleWatchItem}
+          aria-label={`${itemsId.includes(info.mediaId) ? 'Remove' : 'Add'} ${info.title} ${itemsId.includes(info.mediaId) ? 'from' : 'to'} watchlist`}
+          aria-pressed={itemsId.includes(info.mediaId)}
         >
           {itemsId.includes(info.mediaId) ? (
             <p className="poster-info-add_to_watch_list-heart">❤</p>
           ) : (
             <p>+</p>
           )}
-        </span>
+        </button>
         <p className="poster-info-title">{info.title || ''}</p>
         <p className="poster-info-overview">{`${
           info.overview ? info.overview.slice(0, 95) : ''
         }...`}</p>
-      </BrowserView>
+      </div>
     </div>
   )
 }

@@ -5,6 +5,7 @@ vi.mock('next/router', () => ({ useRouter: () => ({ push: vi.fn(), query: { type
 
 import RenderItems from '@/components/shared/RenderItems'
 import { ToWatchListProvider } from '@/contexts/ToWatchListContext'
+import { NavigationContext } from '@/contexts/NavigationContext'
 
 const pages = [
   {
@@ -37,9 +38,11 @@ const pages = [
 
 const renderItems = () =>
   render(
-    <ToWatchListProvider>
-      <RenderItems data={pages} />
-    </ToWatchListProvider>
+    <NavigationContext.Provider value={{ pathname: '/movies', push: () => {} }}>
+      <ToWatchListProvider>
+        <RenderItems data={pages} />
+      </ToWatchListProvider>
+    </NavigationContext.Provider>
   )
 
 afterEach(cleanup)

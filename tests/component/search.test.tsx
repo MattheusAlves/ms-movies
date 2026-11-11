@@ -7,33 +7,30 @@ vi.mock('next/router', () => ({
 }))
 
 import Search from '@/components/shared/Search'
-import { ContentTypeContext } from '@/contexts/ContentTypeContext'
+import { NavigationContext } from '@/contexts/NavigationContext'
 
 afterEach(() => {
   cleanup()
   push.mockReset()
 })
 
-const renderSearch = (changeContentType = vi.fn()) => {
+const renderSearch = () => {
   const wrapper = ({ children }) => (
-    <ContentTypeContext.Provider
-      value={{ contentType: 'movies', changeContentType }}
-    >
+    <NavigationContext.Provider value={{ pathname: '/movies', push }}>
       {children}
-    </ContentTypeContext.Provider>
+    </NavigationContext.Provider>
   )
-  return { changeContentType, ...render(<Search rightNav={false} />, { wrapper }) }
+  return render(<Search rightNav={false} />, { wrapper })
 }
 
 describe('Search', () => {
-  it('encodes the trimmed query and clears the content type on submit', () => {
-    const { container, changeContentType } = renderSearch()
+  it('encodes the trimmed query on submit', () => {
+    const { container } = renderSearch()
     fireEvent.change(screen.getByPlaceholderText('Search'), {
       target: { value: '  Space & Time / 2026  ' }
     })
-    fireEvent.submit(container.querySelector('form'))
+    fireEvent.submit(container.querySelector('form')!)
     expect(push).toHaveBeenCalledWith('/search/Space%20%26%20Time%20%2F%202026')
-    expect(changeContentType).toHaveBeenCalledWith('')
   })
 
   it('does not navigate with an empty query', () => {
@@ -41,7 +38,7 @@ describe('Search', () => {
     fireEvent.change(screen.getByPlaceholderText('Search'), {
       target: { value: '   ' }
     })
-    fireEvent.submit(container.querySelector('form'))
+    fireEvent.submit(container.querySelector('form')!)
     expect(push).not.toHaveBeenCalled()
   })
 })

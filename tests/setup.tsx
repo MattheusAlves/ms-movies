@@ -21,12 +21,3 @@ vi.mock('next/image', () => ({
     )
   }
 }))
-
-// Deterministic browser detection regardless of the CI user agent.
-vi.mock('react-device-detect', () => ({
-  BrowserView: ({ children, className }) => (
-    <div className={className}>{children}</div>
-  ),
-  MobileView: ({ children }) => <div>{children}</div>,
-  isMobile: false
-}))

@@ -96,3 +96,9 @@
     }
   }
 }
+
+@media (hover: none) {
+  .characters-slider-button-next {
+    display: none;
+  }
+}

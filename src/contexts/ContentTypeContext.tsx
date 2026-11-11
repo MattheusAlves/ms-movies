@@ -1,28 +1,20 @@
-import React, { createContext, useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import React, { createContext } from 'react'
+import { useNavigation } from '@/contexts/NavigationContext'
 interface ContentTypeContextData {
   contentType: string
-  changeContentType: (newContentType: string) => void
 }
 interface ContentTypeProviderProps {
   children: React.ReactNode
 }
-export const ContentTypeContext = createContext({} as ContentTypeContextData)
+export const ContentTypeContext = createContext<ContentTypeContextData>({ contentType: '' })
 
 export function ContentTypeProvider({
   children
 }: ContentTypeProviderProps): React.JSX.Element {
-  const [contentType, setContentType] = useState('')
-  const router = useRouter()
-  useEffect(() => {
-    setContentType(String(router.query.type))
-  }, [])
-
-  const changeContentType = (newContentType: string) => {
-    setContentType(newContentType)
-  }
+  const { pathname } = useNavigation()
+  const contentType = pathname === '/movies' ? 'movies' : pathname === '/series' ? 'series' : ''
   return (
-    <ContentTypeContext.Provider value={{ contentType, changeContentType }}>
+    <ContentTypeContext.Provider value={{ contentType }}>
       {children}
     </ContentTypeContext.Provider>
   )

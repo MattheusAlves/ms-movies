@@ -1,5 +1,6 @@
 // Smoke-test a fixture-backed production build, not live TMDB behavior.
 const assert = require('node:assert/strict')
+const fs = require('node:fs')
 const net = require('node:net')
 const path = require('node:path')
 const { spawn } = require('node:child_process')
@@ -13,6 +14,10 @@ async function availablePort() {
 }
 
 async function main() {
+  const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), '.next', 'prerender-manifest.json'), 'utf8'))
+  for (const route of ['/movies', '/series']) {
+    assert.equal(manifest.routes[route]?.initialRevalidateSeconds, 5600, `${route} revalidation`)
+  }
   const port = await availablePort()
   const preload = path.join(__dirname, 'fixtures', 'mock-tmdb.cjs')
   const child = spawn(process.execPath, [require.resolve('next/dist/bin/next'), 'start', '-p', String(port)], {
@@ -48,24 +53,35 @@ async function main() {
       ['/search/fixture', 'Fixture Movie'],
       ['/info/movie/101', 'Fixture Movie'],
       ['/info/tv/202', 'Fixture Series'],
-      ['/to-watch', 'Minha lista']
+      ['/to-watch', 'My watchlist']
     ]
     for (const [url, text] of pages) {
       const response = await fetch(base + url)
       assert.equal(response.status, 200, url)
-      assert.ok((await response.text()).includes(text), `${url} should contain ${text}`)
+      const html = await response.text()
+      assert.ok(html.includes(text), `${url} should contain ${text}`)
+      assert.ok(html.includes('lang="en"'), `${url} should declare English`)
+      assert.ok(!html.includes('fixture-key'), `${url} should not expose the API key`)
       console.log(`OK ${url}`)
     }
     const redirect = await fetch(base + '/', { redirect: 'manual' })
     assert.equal(redirect.status, 308)
     assert.equal(redirect.headers.get('location'), '/movies')
     console.log('OK / redirect')
+    const missing = await fetch(base + '/unexpected-type')
+    assert.equal(missing.status, 404)
+    console.log('OK unknown route')
+    for (const url of ['/info/person/101', '/info/movie/not-a-number']) {
+      const invalid = await fetch(base + url)
+      assert.equal(invalid.status, 404, url)
+      console.log(`OK ${url} invalid detail`)
+    }
     const endpoints = [
       ['/api/movies/popular?page=1', data => data.results[0].title === 'Fixture Movie'],
       ['/api/series/popular?page=1', data => data.results[0].name === 'Fixture Series'],
-      ['/api/cast/movie/101', data => Array.isArray(data)],
-      ['/api/info/trailer/movie/101', data => Array.isArray(data.results)],
-      ['/api/info/watchproviders/movie/101', data => typeof data.results === 'object']
+      ['/api/cast/movie/101', data => data[0].name === 'Fixture Actor'],
+      ['/api/info/trailer/movie/101', data => data.results[0].key === 'fixture-video'],
+      ['/api/info/watchproviders/movie/101', data => data.results.BR.flatrate[0].provider_name === 'Fixture Stream']
     ]
     for (const [url, check] of endpoints) {
       const response = await fetch(base + url)

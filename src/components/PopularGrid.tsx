@@ -13,16 +13,16 @@ interface Props {
 
 // Shared grid for /movies and /series: only the SWR resource differs.
 const PopularGrid = (props: Props): React.JSX.Element => {
-  const { data, loading, setSize, isValidating } = useGetPopular(props.resource, {
-    initialData: props.initialData || null
+  const { resource, initialData, index, setCurrentSize } = props
+  const { data, loading, setSize, size, isValidating } = useGetPopular(resource, {
+    initialData: initialData || null
   })
   useEffect(() => {
-    if (!isValidating && !loading) {
-      setSize(props.index)
-      props.setCurrentSize(props.index)
+    if (!isValidating && !loading && index !== undefined) {
+      if (size !== index) void setSize(index)
+      setCurrentSize(index)
     }
-    // Deliberately narrow deps: re-run only when the target page changes.
-  }, [props.index])
+  }, [index, isValidating, loading, setCurrentSize, setSize, size])
   return (
     <>
       {data && <RenderItems data={data} />}
