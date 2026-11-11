@@ -1,6 +1,7 @@
 import useSWRInfinite from 'swr/infinite'
 
 import fetcher from '@/util/fetcher'
+import { endpoint } from '@/config/endpoint'
 
 interface Props {
   initialData: unknown[] | null
@@ -12,7 +13,7 @@ export const useGetPopular = (
   { initialData }: Props
 ) => {
   const { data, error, ...rest } = useSWRInfinite<unknown>(
-    pageIndex => `/api/${resource}/popular?page=${pageIndex + 1}`, // SWR key
+    pageIndex => endpoint.api.popular(resource, pageIndex + 1),
     fetcher,
     {
       initialSize: 4,

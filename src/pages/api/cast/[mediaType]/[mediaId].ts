@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { tmdbGet } from '@/util/tmdb'
+import { endpoint } from '@/config/endpoint'
+import { contentConfig } from '@/config/content'
 
 export default async function cast(
   req: NextApiRequest,
@@ -9,7 +11,7 @@ export default async function cast(
   const { mediaType, mediaId } = req.query
   try {
     const data = await tmdbGet<{ cast: Array<{ known_for_department: string; profile_path: string | null }> }>(
-      `3/${mediaType}/${mediaId}/credits`, { language: 'en-US' }
+      endpoint.tmdb.credits(mediaType, mediaId), { language: contentConfig.language }
     )
     const actors = data.cast
       .filter(

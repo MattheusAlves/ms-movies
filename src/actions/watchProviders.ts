@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import fetcher from '@/util/fetcher'
+import { endpoint } from '@/config/endpoint'
 
 interface WatchProviders {
   results?: Record<string, { flatrate?: Array<{ provider_name: string }> }>
@@ -13,7 +14,7 @@ export const useGetWatchProviders = ({
   mediaId
 }: Props) => {
   const { data, error, ...rest } = useSWR<WatchProviders>(
-    `/api/info/watchproviders/${mediaType}/${mediaId}`,
+    endpoint.api.watchProviders(mediaType, mediaId),
     fetcher
   )
   return { data, error, loading: !data && !error, ...rest }

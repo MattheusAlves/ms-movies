@@ -3,6 +3,7 @@
 import React from 'react'
 import styles from '@/styles/Media_info.module.scss'
 import { useGetWatchProviders } from '@/actions/watchProviders'
+import { contentConfig } from '@/config/content'
 
 interface Props {
   mediaType: string
@@ -13,11 +14,12 @@ export default function WatchProviders({
   mediaId
 }: Props): React.JSX.Element {
   const { data } = useGetWatchProviders({ mediaType, mediaId })
-  return data?.results?.BR?.flatrate && data.results.BR.flatrate.length ? (
+  const providers = data?.results?.[contentConfig.watchRegion]?.flatrate
+  return providers?.length ? (
     <div className={styles['watch-provider-container']}>
-      <p>Available in Brazil ▼</p>
+      <p>Available in {contentConfig.watchRegionName} ▼</p>
       <div className={styles['watch-provider-wrapper']}>
-        {data.results.BR.flatrate.map((provider, index) => (
+        {providers.map((provider, index) => (
           <span key={index}>{provider.provider_name}</span>
         ))}
       </div>

@@ -5,6 +5,8 @@ import Trailer from '@/components/Trailer'
 import WatchProviders from '@/components/WatchProviders'
 import type { MediaType, TitleDetails } from './detail-data'
 import styles from '@/styles/Media_info.module.scss'
+import { endpoint } from '@/config/endpoint'
+import { contentConfig } from '@/config/content'
 
 export default function DetailView({ data, mediaType, imdbRating }: {
   data: TitleDetails
@@ -19,7 +21,7 @@ export default function DetailView({ data, mediaType, imdbRating }: {
           <div className={styles['media-presentation-wrapper']}>
             <div className={styles['media-presentation-poster-wrapper']}>
               <Image
-                src={data.poster_path ? `https://image.tmdb.org/t/p/w400${data.poster_path}` : '/404.png'}
+                src={data.poster_path ? endpoint.tmdb.image(400, data.poster_path) : '/404.png'}
                 alt={data.title || data.name || ''}
                 fill
                 sizes="(max-width: 768px) 100vw, 400px"
@@ -39,7 +41,7 @@ export default function DetailView({ data, mediaType, imdbRating }: {
               )}
               {!!data.budget && data.budget > 0 && (
                 <div className={styles.budget}>
-                  <span>{`Budget: ${data.budget.toLocaleString('en-US')} USD`}</span>
+                  <span>{`Budget: ${data.budget.toLocaleString(contentConfig.language)} USD`}</span>
                 </div>
               )}
               {data.number_of_seasons && (

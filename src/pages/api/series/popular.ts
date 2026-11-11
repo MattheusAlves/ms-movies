@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { tmdbGet } from '@/util/tmdb'
+import { endpoint } from '@/config/endpoint'
+import { contentConfig } from '@/config/content'
 
 export default async function popular(
   req: NextApiRequest,
@@ -8,9 +10,9 @@ export default async function popular(
 ): Promise<void> {
   const { page } = req.query
   try {
-    const data = await tmdbGet('3/discover/tv', {
-      sort_by: 'popularity.desc',
-      language: 'en-US',
+    const data = await tmdbGet(endpoint.tmdb.discover('tv'), {
+      sort_by: contentConfig.discoverySort,
+      language: contentConfig.language,
       page: page || 1
     })
     res.status(200).json(data)

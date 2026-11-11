@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import fetcher from '@/util/fetcher'
+import { endpoint } from '@/config/endpoint'
 
 interface Props {
   mediaType: string
@@ -7,7 +8,7 @@ interface Props {
 }
 export const useGetTrailer = ({ mediaType, mediaId }: Props) => {
   const { data, error, ...rest } = useSWR<{ results: Array<{ key: string }> }>(
-    `/api/info/trailer/${mediaType}/${mediaId}`,
+    endpoint.api.trailer(mediaType, mediaId),
     fetcher
   )
   return { data, error, loading: !data && !error, ...rest }

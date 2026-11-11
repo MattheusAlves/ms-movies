@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import fetcher from '@/util/fetcher'
+import { endpoint } from '@/config/endpoint'
 
 interface Actor {
   id: number
@@ -11,7 +12,7 @@ interface Actor {
 
 export const useGetActors = ({ mediaType, mediaId }) => {
   const { data, error, ...rest } = useSWR<Actor[]>(
-    `/api/cast/${mediaType}/${mediaId}`,
+    endpoint.api.cast(mediaType, mediaId),
     fetcher
   )
   return { data, error, loading: !data && !error, ...rest }

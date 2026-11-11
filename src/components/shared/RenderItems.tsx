@@ -1,5 +1,6 @@
 import PosterCard from '@/components/shared/PosterCard'
 import { normalizeMediaItem } from '@/util/media'
+import { endpoint } from '@/config/endpoint'
 
 const RenderItems = (props): React.JSX.Element => {
   const { data } = props
@@ -12,7 +13,7 @@ const RenderItems = (props): React.JSX.Element => {
           key={media.mediaId}
           src={
             imagePath
-              ? `https://image.tmdb.org/t/p/w300${imagePath}`
+              ? endpoint.tmdb.image(300, imagePath)
               : '/404.png'
           }
           info={media}

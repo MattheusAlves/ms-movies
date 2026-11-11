@@ -29,8 +29,12 @@ describe('data pages use the server TMDB key', () => {
     for (const call of axiosGet.mock.calls) {
       expect(call[1].params.api_key).toBe('test-tmdb-key')
     }
-    expect(axiosGet.mock.calls[0][0]).toBe('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc')
-    expect(axiosGet.mock.calls[1][0]).toBe('https://api.themoviedb.org/3/discover/tv?sort_by=popularity.desc')
+    expect(axiosGet.mock.calls[0][0]).toBe('https://api.themoviedb.org/3/discover/movie')
+    expect(axiosGet.mock.calls[1][0]).toBe('https://api.themoviedb.org/3/discover/tv')
+    expect(axiosGet.mock.calls[0][1].params.sort_by).toBe('popularity.desc')
+    expect(axiosGet.mock.calls[1][1].params.sort_by).toBe('popularity.desc')
+    expect(axiosGet.mock.calls[0][1].params.language).toBe('en-US')
+    expect(axiosGet.mock.calls[1][1].params.language).toBe('en-US')
     expect(axiosGet.mock.calls[2][0]).toBe('https://api.themoviedb.org/3/search/multi')
     expect(axiosGet.mock.calls[2][1].params.query).toBe('space')
     expect(axiosGet.mock.calls[2][1].params.language).toBe('en-US')
@@ -62,7 +66,11 @@ describe('detail page IMDb rating', () => {
 
     const props = await loadTitle('movie', '1')
 
+    expect(axiosGet.mock.calls[0][0]).toBe('https://api.themoviedb.org/3/movie/1')
     expect(axiosGet.mock.calls[0][1].params.api_key).toBe('test-tmdb-key')
+    expect(axiosGet.mock.calls[0][1].params.language).toBe('en-US')
+    expect(axiosGet.mock.calls[1][0]).toBe('https://imdb8.p.rapidapi.com/title/get-overview-details')
+    expect(axiosGet.mock.calls[1][1].headers['x-rapidapi-host']).toBe('imdb8.p.rapidapi.com')
     expect(axiosGet.mock.calls[1][1].headers['x-rapidapi-key']).toBe('test-rapidapi-key')
     expect(axiosGet.mock.calls[1][1].timeout).toBe(3000)
     expect(props.imdbRating).toBe(7.5)

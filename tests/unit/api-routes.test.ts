@@ -49,6 +49,12 @@ describe('API routes proxy TMDB', () => {
       language: 'en-US',
       page: '7'
     })
+    expect(axiosGet.mock.calls[3][1].params).toEqual({
+      api_key: 'test-key',
+      sort_by: 'popularity.desc',
+      language: 'en-US',
+      page: '7'
+    })
   })
 
   it('cast route filters to acting members with a profile', async () => {
@@ -56,6 +62,7 @@ describe('API routes proxy TMDB', () => {
     const res = recorder()
     await cast(apiRequest({ mediaType: 'movie', mediaId: '101' }), res)
     expect(axiosGet.mock.calls[0][0]).toContain('api.themoviedb.org/3/movie/101/credits')
+    expect(axiosGet.mock.calls[0][1].params.language).toBe('en-US')
     expect(res.code).toBe(200)
     expect(res.body).toEqual([
       { id: 1, known_for_department: 'Acting', profile_path: '/a.jpg' }
@@ -68,6 +75,7 @@ describe('API routes proxy TMDB', () => {
     await trailer(apiRequest({ mediaType: 'movie', mediaId: '101' }), res)
     expect(res.code).toBe(200)
     expect(axiosGet.mock.calls[0][0]).toContain('/3/movie/101/videos')
+    expect(axiosGet.mock.calls[0][1].params.language).toBe('en-US')
 
     const providers = recorder()
     await watchProviders(apiRequest({ mediaType: 'tv', mediaId: '202' }), providers)

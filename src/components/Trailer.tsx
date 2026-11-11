@@ -6,6 +6,7 @@ import styles from '@/styles/Media_info.module.scss'
 
 import Spinner from '@/components/shared/Spinner'
 import { useGetTrailer } from '@/actions/trailer'
+import { endpoint } from '@/config/endpoint'
 
 interface Props {
   mediaType: string
@@ -24,7 +25,7 @@ export default function Trailer({ mediaType, mediaId }: Props): React.JSX.Elemen
       ) : (
         videoKey && (
           <iframe
-            src={`https://www.youtube.com/embed/${videoKey}`}
+            src={endpoint.youtube.embed(videoKey)}
             frameBorder="0"
             allowFullScreen
             title="video"

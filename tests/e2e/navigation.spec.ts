@@ -39,6 +39,7 @@ test('discovery, watchlist, search and details work after hydration', async ({ p
   await expect(page).toHaveTitle('MS - Fixture Movie')
   await expect(page.getByText('A fixture movie.')).toBeVisible()
   await expect(page.getByAltText('Fixture Actor')).toBeVisible()
+  await expect(page.getByText('Available in Brazil ▼')).toBeVisible()
   await expect(page.getByText('Fixture Stream')).toBeVisible()
   await expect(page.locator('iframe[title="video"]')).toHaveAttribute('src', /fixture-video/)
 

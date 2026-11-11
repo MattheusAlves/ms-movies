@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { endpoint } from '@/config/endpoint'
+import { contentConfig } from '@/config/content'
 
 export type MediaType = 'movie' | 'tv'
 
@@ -26,8 +28,8 @@ export async function loadTitle(mediaType: MediaType, mediaId: string) {
   let result
   try {
     result = await axios.get<TitleDetails>(
-      `https://api.themoviedb.org/3/${mediaType}/${mediaId}?language=en-US`,
-      { params: { api_key: process.env.API_KEY } }
+      endpoint.tmdb.url(endpoint.tmdb.detail(mediaType, mediaId)),
+      { params: { api_key: process.env.API_KEY, language: contentConfig.language } }
     )
   } catch {
     // Axios errors can include the API key in the request URL.
@@ -38,11 +40,11 @@ export async function loadTitle(mediaType: MediaType, mediaId: string) {
   if (result.data.imdb_id && process.env.RAPIDAPI_KEY) {
     try {
       const imdbResult = await axios.get(
-        'https://imdb8.p.rapidapi.com/title/get-overview-details',
+        endpoint.imdb.overview,
         {
           headers: {
             'x-rapidapi-key': process.env.RAPIDAPI_KEY,
-            'x-rapidapi-host': 'imdb8.p.rapidapi.com'
+            'x-rapidapi-host': endpoint.imdb.host
           },
           params: { tconst: result.data.imdb_id },
           timeout: 3000

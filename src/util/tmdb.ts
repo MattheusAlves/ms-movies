@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { endpoint } from '@/config/endpoint'
 
 /**
  * Server-side TMDB read helper shared by the API proxy routes.
@@ -9,7 +10,7 @@ export async function tmdbGet<T = unknown>(
   path: string,
   params: Record<string, unknown> = {}
 ): Promise<T> {
-  const { data } = await axios.get<T>(`https://api.themoviedb.org/${path}`, {
+  const { data } = await axios.get<T>(endpoint.tmdb.url(path), {
     // Explicit last so callers cannot override the server key.
     params: { ...params, api_key: process.env.API_KEY }
   })

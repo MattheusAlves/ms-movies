@@ -14,6 +14,7 @@ import 'pure-react-carousel/dist/react-carousel.es.css'
 
 import { useGetActors } from '@/actions/actors'
 import styles from '@/styles/Media_info.module.scss'
+import { endpoint } from '@/config/endpoint'
 
 const Persons = ({ mediaType, mediaId }): React.JSX.Element => {
   const { data } = useGetActors({ mediaType, mediaId })
@@ -49,7 +50,7 @@ const Persons = ({ mediaType, mediaId }): React.JSX.Element => {
                     <div className={styles['character-wrapper']}>
                       <div className={`${styles.loading}`}>
                         <Image
-                          src={`https://image.tmdb.org/t/p/w200${person.profile_path}`}
+                          src={endpoint.tmdb.image(200, person.profile_path)}
                           width={170}
                           height={250}
                           quality={75}

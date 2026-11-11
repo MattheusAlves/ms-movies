@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { endpoint } from '@/config/endpoint'
+import { contentConfig } from '@/config/content'
 
 export type DiscoveryResource = 'movies' | 'series'
 
@@ -7,8 +9,8 @@ export async function loadDiscoveryData(resource: DiscoveryResource) {
   const mediaType = resource === 'movies' ? 'movie' : 'tv'
   try {
     const result = await axios.get(
-      `https://api.themoviedb.org/3/discover/${mediaType}?sort_by=popularity.desc`,
-      { params: { api_key: process.env.API_KEY, language: 'en-US', page: 1 } }
+      endpoint.tmdb.url(endpoint.tmdb.discover(mediaType)),
+      { params: { api_key: process.env.API_KEY, sort_by: contentConfig.discoverySort, language: contentConfig.language, page: 1 } }
     )
     return [result.data]
   } catch {
