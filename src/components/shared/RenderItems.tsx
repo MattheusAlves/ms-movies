@@ -10,7 +10,7 @@ const RenderItems = (props): React.JSX.Element => {
       const imagePath = media.posterPath || media.backdropPath
       return (
         <PosterCard
-          key={media.mediaId}
+          key={`${media.mediaType}:${media.mediaId}`}
           src={
             imagePath
               ? endpoint.tmdb.image(300, imagePath)

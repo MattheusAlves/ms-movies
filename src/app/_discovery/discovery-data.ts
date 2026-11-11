@@ -1,6 +1,4 @@
-import axios from 'axios'
-import { endpoint } from '@/config/endpoint'
-import { contentConfig } from '@/config/content'
+import { tmdb } from '@/util/tmdb'
 
 export type DiscoveryResource = 'movies' | 'series'
 
@@ -8,11 +6,7 @@ export type DiscoveryResource = 'movies' | 'series'
 export async function loadDiscoveryData(resource: DiscoveryResource) {
   const mediaType = resource === 'movies' ? 'movie' : 'tv'
   try {
-    const result = await axios.get(
-      endpoint.tmdb.url(endpoint.tmdb.discover(mediaType)),
-      { params: { api_key: process.env.API_KEY, sort_by: contentConfig.discoverySort, language: contentConfig.language, page: 1 } }
-    )
-    return [result.data]
+    return [await tmdb.discover(mediaType, 1)]
   } catch {
     // Axios errors can contain the request URL and API key.
     throw new Error('Unable to load discovery data from TMDB')

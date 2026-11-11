@@ -94,9 +94,10 @@ for (const [resource, title, mediaType, id] of [
     if (testInfo.project.name === 'desktop') await poster.hover()
     await poster.getByRole('button', { name: `Add ${title} to watchlist` }).click()
     await expect.poll(async () => {
-      const cookie = (await page.context().cookies()).find(item => item.name === 'ToWatchList')
-      if (!cookie) return undefined
-      return JSON.parse(decodeURIComponent(cookie.value)).find(item => item.mediaId === id)?.mediaType
+      return page.evaluate(mediaId => {
+        const raw = localStorage.getItem('ms.watchlist.v1')
+        return raw ? JSON.parse(raw).items.find(item => item.mediaId === mediaId)?.mediaType : undefined
+      }, id)
     }).toBe(mediaType)
     await poster.click()
     await expect(page).toHaveURL(new RegExp(`/info/${mediaType}/${id}$`))

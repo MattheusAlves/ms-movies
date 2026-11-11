@@ -1,6 +1,8 @@
 // @vitest-environment node
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { endpoint } from '@/config/endpoint'
+
+afterEach(() => vi.unstubAllEnvs())
 
 describe('endpoint configuration', () => {
   it('builds the existing application API routes', () => {
@@ -28,5 +30,32 @@ describe('endpoint configuration', () => {
     expect(endpoint.imdb.host).toBe('imdb8.p.rapidapi.com')
     expect(endpoint.imdb.overview).toBe('https://imdb8.p.rapidapi.com/title/get-overview-details')
     expect(endpoint.youtube.embed('video-id')).toBe('https://www.youtube.com/embed/video-id')
+  })
+
+  it('uses configured bases, including base paths and trailing slashes', () => {
+    vi.stubEnv('TMDB_API_BASE_URL', 'https://api.example.test/prefix/')
+    vi.stubEnv('IMDB_API_BASE_URL', 'https://ratings.example.test/v1/')
+    vi.stubEnv('NEXT_PUBLIC_TMDB_IMAGE_BASE_URL', 'https://images.example.test/assets/')
+    vi.stubEnv('NEXT_PUBLIC_YOUTUBE_EMBED_BASE_URL', 'https://video.example.test/embed/')
+    expect(endpoint.tmdb.url(endpoint.tmdb.search)).toBe('https://api.example.test/prefix/3/search/multi')
+    expect(endpoint.imdb.host).toBe('ratings.example.test')
+    expect(endpoint.imdb.overview).toBe('https://ratings.example.test/v1/title/get-overview-details')
+    expect(endpoint.tmdb.image(200, '/actor.jpg')).toBe('https://images.example.test/assets/w200/actor.jpg')
+    expect(endpoint.youtube.embed('abc')).toBe('https://video.example.test/embed/abc')
+  })
+
+  it('rejects missing, insecure, and credential-bearing base URLs without echoing them', () => {
+    vi.stubEnv('TMDB_API_BASE_URL', '')
+    expect(() => endpoint.tmdb.url(endpoint.tmdb.search)).toThrow('Missing required environment variable: TMDB_API_BASE_URL')
+    for (const value of ['not a url', 'http://example.test', 'https://user:secret@example.test', 'https://example.test/?token=secret', 'https://example.test/#secret']) {
+      vi.stubEnv('TMDB_API_BASE_URL', value)
+      try {
+        endpoint.tmdb.url(endpoint.tmdb.search)
+        throw new Error('Expected invalid configuration to throw')
+      } catch (error) {
+        expect(String(error)).toContain('Invalid TMDB_API_BASE_URL')
+        expect(String(error)).not.toContain('secret')
+      }
+    }
   })
 })

@@ -1,5 +1,5 @@
 import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('next/router', () => ({ useRouter: () => ({ push: vi.fn(), query: { type: 'movies' } }) }))
 
@@ -45,7 +45,8 @@ const renderItems = () =>
     </NavigationContext.Provider>
   )
 
-afterEach(cleanup)
+beforeEach(() => localStorage.clear())
+afterEach(() => { cleanup(); localStorage.clear() })
 
 describe('RenderItems', () => {
   it('renders one poster card per item across all pages', () => {

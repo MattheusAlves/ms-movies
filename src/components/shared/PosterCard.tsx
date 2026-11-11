@@ -13,14 +13,12 @@ const PosterCard = (props: Props): React.JSX.Element => {
   const { src, info } = props
   const router = useNavigation()
   const { contentType } = useContext(ContentTypeContext)
-  const { toggleWatchItem, itemsId } = useContext(ToWatchListContext)
+  const { toggleWatchItem, isWatchItemSaved, canEdit } = useContext(ToWatchListContext)
+  const mediaType = info.mediaType || (contentType === 'movies' ? 'movie' : contentType === 'series' ? 'tv' : '')
+  const saved = isWatchItemSaved(info)
   const [imageError, setImageError] = useState(false)
   const handlePosterClick = () => {
-    router.push(
-      `/info/${
-        info.mediaType || (contentType === 'movies' ? 'movie' : 'tv')
-      }/${info.mediaId}`
-    )
+    if (mediaType) router.push(`/info/${mediaType}/${info.mediaId}`)
   }
   const handleToggleWatchItem = e => {
     e.stopPropagation()
@@ -43,10 +41,11 @@ const PosterCard = (props: Props): React.JSX.Element => {
           type="button"
           className="poster-info-add_to_watch_list"
           onClick={handleToggleWatchItem}
-          aria-label={`${itemsId.includes(info.mediaId) ? 'Remove' : 'Add'} ${info.title} ${itemsId.includes(info.mediaId) ? 'from' : 'to'} watchlist`}
-          aria-pressed={itemsId.includes(info.mediaId)}
+          disabled={!canEdit || !mediaType || !Number.isSafeInteger(info.mediaId) || info.mediaId <= 0}
+          aria-label={`${saved ? 'Remove' : 'Add'} ${info.title} ${saved ? 'from' : 'to'} watchlist`}
+          aria-pressed={saved}
         >
-          {itemsId.includes(info.mediaId) ? (
+          {saved ? (
             <p className="poster-info-add_to_watch_list-heart">❤</p>
           ) : (
             <p>+</p>

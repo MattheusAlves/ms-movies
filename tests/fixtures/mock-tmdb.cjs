@@ -19,7 +19,10 @@ nock('https://api.themoviedb.org')
   .get(/.*/)
   .query(true)
   .reply(uri => {
-    const pathname = new URL(uri, 'https://api.themoviedb.org').pathname
+    const url = new URL(uri, 'https://api.themoviedb.org')
+    const pathname = url.pathname
+    if (pathname === '/3/search/multi' && url.searchParams.get('query') === 'offline-fixture') return [503, { message: 'Fixture outage' }]
+    if (pathname === '/3/movie/999') return [503, { message: 'Fixture outage' }]
     if (pathname.includes('/credits')) return [200, { cast }]
     if (pathname.includes('/videos')) return [200, { results: [{ key: 'fixture-video' }] }]
     if (pathname.includes('/watch/providers')) return [200, { results: { BR: { flatrate: [{ provider_name: 'Fixture Stream' }] } } }]

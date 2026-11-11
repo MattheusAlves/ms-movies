@@ -1,9 +1,8 @@
 // Shared URLs and paths only: credentials stay in server-side request code.
+import { configuredBaseUrl } from './base-url.cjs'
+
 type Segment = string | number | string[] | undefined
 type Resource = 'movies' | 'series'
-
-const tmdbBase = 'https://api.themoviedb.org'
-const imdbHost = 'imdb8.p.rapidapi.com'
 
 export const endpoint = {
   api: {
@@ -15,20 +14,25 @@ export const endpoint = {
     category: (resource: Resource) => `/api/${resource}/by/category`
   },
   tmdb: {
-    url: (path: string) => `${tmdbBase}/${path}`,
+    // Server-only: never use this base URL or API credentials in client code.
+    url: (path: string) => `${configuredBaseUrl(process.env.TMDB_API_BASE_URL, 'TMDB_API_BASE_URL')}/${path}`,
     discover: (mediaType: Segment) => `3/discover/${mediaType}`,
     search: '3/search/multi',
     detail: (mediaType: Segment, mediaId: Segment) => `3/${mediaType}/${mediaId}`,
     credits: (mediaType: Segment, mediaId: Segment) => `3/${mediaType}/${mediaId}/credits`,
     videos: (mediaType: Segment, mediaId: Segment) => `3/${mediaType}/${mediaId}/videos`,
     watchProviders: (mediaType: Segment, mediaId: Segment) => `3/${mediaType}/${mediaId}/watch/providers`,
-    image: (width: number, path: string) => `https://image.tmdb.org/t/p/w${width}${path}`
+    image: (width: number, path: string) => `${configuredBaseUrl(process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL, 'NEXT_PUBLIC_TMDB_IMAGE_BASE_URL')}/w${width}${path}`
   },
   imdb: {
-    host: imdbHost,
-    overview: `https://${imdbHost}/title/get-overview-details`
+    get host() {
+      return new URL(configuredBaseUrl(process.env.IMDB_API_BASE_URL, 'IMDB_API_BASE_URL')).hostname
+    },
+    get overview() {
+      return `${configuredBaseUrl(process.env.IMDB_API_BASE_URL, 'IMDB_API_BASE_URL')}/title/get-overview-details`
+    }
   },
   youtube: {
-    embed: (videoKey: string) => `https://www.youtube.com/embed/${videoKey}`
+    embed: (videoKey: string) => `${configuredBaseUrl(process.env.NEXT_PUBLIC_YOUTUBE_EMBED_BASE_URL, 'NEXT_PUBLIC_YOUTUBE_EMBED_BASE_URL')}/${videoKey}`
   }
 } as const

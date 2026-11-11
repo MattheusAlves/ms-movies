@@ -1,43 +1,26 @@
 import axios from 'axios'
 import { endpoint } from '@/config/endpoint'
-import { contentConfig } from '@/config/content'
+import { isValidTmdbIdentity, tmdb } from '@/util/tmdb'
+import type { MediaType } from '@/util/tmdb'
 
-export type MediaType = 'movie' | 'tv'
-
-export interface TitleDetails {
-  id: number
-  title?: string
-  name?: string
-  overview?: string
-  poster_path?: string | null
-  genres?: Array<{ id: number; name: string }>
-  release_date?: string
-  first_air_date?: string
-  budget?: number
-  number_of_seasons?: number
-  vote_average?: number
-  imdb_id?: string
-}
+export type { MediaType, TitleDetails } from '@/util/tmdb'
 
 export function isValidTitleParams(mediaType: string, mediaId: string): mediaType is MediaType {
-  return (mediaType === 'movie' || mediaType === 'tv') && /^[1-9]\d*$/.test(mediaId)
+  return isValidTmdbIdentity(mediaType, mediaId)
 }
 
 // Imported only by the server-rendered detail page.
 export async function loadTitle(mediaType: MediaType, mediaId: string) {
-  let result
+  let data
   try {
-    result = await axios.get<TitleDetails>(
-      endpoint.tmdb.url(endpoint.tmdb.detail(mediaType, mediaId)),
-      { params: { api_key: process.env.API_KEY, language: contentConfig.language } }
-    )
+    data = await tmdb.title(mediaType, mediaId)
   } catch {
     // Axios errors can include the API key in the request URL.
     throw new Error('Unable to load title data from TMDB')
   }
 
   let imdbRating: number | null = null
-  if (result.data.imdb_id && process.env.RAPIDAPI_KEY) {
+  if (data.imdb_id && process.env.RAPIDAPI_KEY) {
     try {
       const imdbResult = await axios.get(
         endpoint.imdb.overview,
@@ -46,7 +29,7 @@ export async function loadTitle(mediaType: MediaType, mediaId: string) {
             'x-rapidapi-key': process.env.RAPIDAPI_KEY,
             'x-rapidapi-host': endpoint.imdb.host
           },
-          params: { tconst: result.data.imdb_id },
+          params: { tconst: data.imdb_id },
           timeout: 3000
         }
       )
@@ -56,5 +39,5 @@ export async function loadTitle(mediaType: MediaType, mediaId: string) {
       // IMDb ratings are optional; keep the detail page available on failure.
     }
   }
-  return { data: result.data, mediaType, imdbRating }
+  return { data, mediaType, imdbRating }
 }

@@ -15,10 +15,12 @@ vi.mock('@/actions/popular', () => ({ useGetPopular: getPopular }))
 
 import { AppProviders } from '@/app/providers'
 import DiscoveryView from '@/app/_discovery/DiscoveryView'
+import { watchlistConfig } from '@/config/watchlist'
 
 beforeEach(() => {
   Cookies.remove('ToWatchList')
   Cookies.remove('itemsId')
+  localStorage.clear()
   push.mockReset()
   getPopular.mockImplementation((_resource, options) => ({
     data: options.initialData,
@@ -32,6 +34,7 @@ afterEach(() => {
   cleanup()
   Cookies.remove('ToWatchList')
   Cookies.remove('itemsId')
+  localStorage.clear()
 })
 
 it.each([
@@ -47,7 +50,7 @@ it.each([
 
   expect(getPopular).toHaveBeenCalledWith(resource, expect.any(Object))
   fireEvent.click(screen.getByText('+'))
-  expect(JSON.parse(Cookies.get('ToWatchList')!)[0]).toMatchObject({ mediaId: 101, mediaType })
+  expect(JSON.parse(localStorage.getItem(watchlistConfig.storageKey)!).items[0]).toMatchObject({ mediaId: 101, mediaType })
   fireEvent.click(screen.getByAltText('Fixture'))
   expect(push).toHaveBeenCalledWith(`/info/${mediaType}/101`)
 })

@@ -5,11 +5,13 @@ import Link from 'next/link'
 
 import Search from '@/components/shared/Search'
 import { ContentTypeContext } from '@/contexts/ContentTypeContext'
+import { ToWatchListContext } from '@/contexts/ToWatchListContext'
 
 const Header = (): React.JSX.Element => {
   const [isActive, setIsActive] = useState(false)
   const [transparent, setTransparent] = useState(true)
   const { contentType } = useContext(ContentTypeContext)
+  const { storageWarning } = useContext(ToWatchListContext)
   useEffect(() => {
     const onScroll = () => setTransparent(window.scrollY <= 10)
     window.addEventListener('scroll', onScroll)
@@ -21,6 +23,7 @@ const Header = (): React.JSX.Element => {
     setIsActive(!isActive)
   }
   return (
+    <>
     <nav className={!transparent ? 'nav-bar' : 'nav-bar transparent'}>
       <div className="nav-bar-logo">
         <h1>MS - Movies and Series</h1>
@@ -62,6 +65,8 @@ const Header = (): React.JSX.Element => {
         ></div>
       </button>
     </nav>
+    {storageWarning && <p className="watchlist-warning" role="alert">{storageWarning}</p>}
+    </>
   )
 }
 export default Header

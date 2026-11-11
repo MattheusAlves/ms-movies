@@ -7,6 +7,7 @@ vi.mock('next/router', () => ({ useRouter: () => ({ push: vi.fn(), query: { type
 import PosterCard from '@/components/shared/PosterCard'
 import { ToWatchListProvider } from '@/contexts/ToWatchListContext'
 import { NavigationContext } from '@/contexts/NavigationContext'
+import { watchlistConfig } from '@/config/watchlist'
 
 const push = vi.fn()
 
@@ -33,6 +34,7 @@ const renderCard = (mediaId: number) =>
 beforeEach(() => {
   Cookies.remove('ToWatchList')
   Cookies.remove('itemsId')
+  localStorage.clear()
   push.mockReset()
 })
 
@@ -40,6 +42,7 @@ afterEach(() => {
   cleanup()
   Cookies.remove('ToWatchList')
   Cookies.remove('itemsId')
+  localStorage.clear()
 })
 
 describe('PosterCard watchlist toggle', () => {
@@ -60,24 +63,23 @@ describe('PosterCard watchlist toggle', () => {
     expect(screen.getByText('+')).toBeInTheDocument()
   })
 
-  it('persists through the cookie across a simulated reload', () => {
+  it('persists through versioned storage across a simulated reload', () => {
     const first = renderCard(2)
     fireEvent.click(screen.getByText('+'))
-    expect(JSON.parse(Cookies.get('ToWatchList')!)[0].mediaId).toBe(2)
+    expect(JSON.parse(localStorage.getItem(watchlistConfig.storageKey)!).items[0].mediaId).toBe(2)
     first.unmount()
 
-    // Fresh provider state reads the cookie on mount, like a page reload.
+    // Fresh provider state reads versioned storage on mount, like a page reload.
     renderCard(2)
     expect(screen.getByText('❤')).toBeInTheDocument()
-    expect(JSON.parse(Cookies.get('itemsId')!)).toEqual([2])
+    expect(JSON.parse(localStorage.getItem(watchlistConfig.storageKey)!).items).toHaveLength(1)
   })
 
   it('toggling off leaves an empty saved list', () => {
     renderCard(3)
     fireEvent.click(screen.getByText('+'))
     fireEvent.click(screen.getByText('❤'))
-    expect(JSON.parse(Cookies.get('ToWatchList')!)).toEqual([])
-    expect(JSON.parse(Cookies.get('itemsId')!)).toEqual([])
+    expect(JSON.parse(localStorage.getItem(watchlistConfig.storageKey)!).items).toEqual([])
   })
 
   it('stops propagation so the poster click does not navigate', () => {

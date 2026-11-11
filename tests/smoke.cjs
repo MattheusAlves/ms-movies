@@ -4,6 +4,7 @@ const fs = require('node:fs')
 const net = require('node:net')
 const path = require('node:path')
 const { spawn } = require('node:child_process')
+const fixtureEnv = require('./fixtures/env.cjs')
 
 async function availablePort() {
   const socket = net.createServer()
@@ -18,13 +19,22 @@ async function main() {
   for (const route of ['/movies', '/series']) {
     assert.equal(manifest.routes[route]?.initialRevalidateSeconds, 5600, `${route} revalidation`)
   }
+  const clientDir = path.join(process.cwd(), '.next', 'static')
+  const serverOnly = [fixtureEnv.API_KEY, fixtureEnv.TMDB_API_BASE_URL, fixtureEnv.IMDB_API_BASE_URL]
+  for (const entry of fs.readdirSync(clientDir, { recursive: true, withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith('.js')) continue
+    const source = fs.readFileSync(path.join(entry.parentPath, entry.name), 'utf8')
+    for (const value of serverOnly) {
+      assert.ok(!source.includes(value), 'Client bundle must not contain fixture credentials or server-only API bases')
+    }
+  }
+  console.log('OK server-only configuration absent from browser bundles')
   const port = await availablePort()
   const preload = path.join(__dirname, 'fixtures', 'mock-tmdb.cjs')
   const child = spawn(process.execPath, [require.resolve('next/dist/bin/next'), 'start', '-p', String(port)], {
     env: {
       ...process.env,
-      API_KEY: 'fixture-key',
-      RAPIDAPI_KEY: '',
+      ...fixtureEnv,
       NODE_OPTIONS: `${process.env.NODE_OPTIONS || ''} --require=${JSON.stringify(preload)}`.trim(),
       NEXT_TELEMETRY_DISABLED: '1'
     },
@@ -86,8 +96,16 @@ async function main() {
     for (const [url, check] of endpoints) {
       const response = await fetch(base + url)
       assert.equal(response.status, 200, url)
+      assert.equal(response.headers.get('cache-control'), 'no-store', `${url} caching`)
       assert.ok(check(await response.json()), url)
       console.log(`OK ${url}`)
+    }
+    for (const url of ['/api/movies/popular?page=0', '/api/series/popular?page=501', '/api/cast/person/101']) {
+      const response = await fetch(base + url)
+      assert.equal(response.status, 400, url)
+      assert.equal(response.headers.get('cache-control'), 'no-store', `${url} caching`)
+      assert.deepEqual(await response.json(), { message: 'Invalid request' })
+      console.log(`OK ${url} invalid input`)
     }
   } catch (error) {
     console.error(output)

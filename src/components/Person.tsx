@@ -17,7 +17,7 @@ import styles from '@/styles/Media_info.module.scss'
 import { endpoint } from '@/config/endpoint'
 
 const Persons = ({ mediaType, mediaId }): React.JSX.Element => {
-  const { data } = useGetActors({ mediaType, mediaId })
+  const { data, error } = useGetActors({ mediaType, mediaId })
   const [isNarrow, setIsNarrow] = useState(false)
   useEffect(() => {
     if (!window.matchMedia) return
@@ -29,6 +29,7 @@ const Persons = ({ mediaType, mediaId }): React.JSX.Element => {
   }, [])
   return (
     <div className={styles['characters-container']}>
+      {error && <p className="status-message" role="status">Cast information is temporarily unavailable.</p>}
       {data && (
         <CarouselProvider
           naturalSlideHeight={250}

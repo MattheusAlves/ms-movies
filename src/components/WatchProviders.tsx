@@ -13,8 +13,9 @@ export default function WatchProviders({
   mediaType,
   mediaId
 }: Props): React.JSX.Element {
-  const { data } = useGetWatchProviders({ mediaType, mediaId })
+  const { data, error } = useGetWatchProviders({ mediaType, mediaId })
   const providers = data?.results?.[contentConfig.watchRegion]?.flatrate
+  if (error) return <p className="status-message" role="status">Streaming availability is temporarily unavailable.</p>
   return providers?.length ? (
     <div className={styles['watch-provider-container']}>
       <p>Available in {contentConfig.watchRegionName} ▼</p>

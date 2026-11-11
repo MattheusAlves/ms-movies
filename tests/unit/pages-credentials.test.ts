@@ -8,6 +8,7 @@ import { loadDiscoveryData } from '@/app/_discovery/discovery-data'
 import * as moviesPage from '@/app/movies/page'
 import * as seriesPage from '@/app/series/page'
 import { searchTitles } from '@/app/search/[title]/search-data'
+import { dynamic as searchRendering } from '@/app/search/[title]/page'
 import { isValidTitleParams, loadTitle } from '@/app/info/[mediaType]/[mediaId]/detail-data'
 import { dynamic as detailRendering } from '@/app/info/[mediaType]/[mediaId]/page'
 
@@ -53,13 +54,14 @@ describe('data pages use the server TMDB key', () => {
     expect(seriesPage.revalidate).toBe(5600)
     expect(moviesPage.dynamic).toBe('force-static')
     expect(seriesPage.dynamic).toBe('force-static')
+    expect(searchRendering).toBe('force-dynamic')
   })
 })
 
 describe('detail page IMDb rating', () => {
   it('requests an optional rating server-side without returning keys', async () => {
     axiosGet
-      .mockResolvedValueOnce({ data: { imdb_id: 'tt1234567' } })
+      .mockResolvedValueOnce({ data: { id: 1, imdb_id: 'tt1234567' } })
       .mockResolvedValueOnce({ data: { ratings: { rating: 7.5 } } })
     vi.stubEnv('API_KEY', 'test-tmdb-key')
     vi.stubEnv('RAPIDAPI_KEY', 'test-rapidapi-key')
@@ -80,7 +82,7 @@ describe('detail page IMDb rating', () => {
   it('keeps the page available without an IMDb key or when IMDb fails', async () => {
     for (const rapidKey of [undefined, 'test-rapidapi-key']) {
       axiosGet
-        .mockImplementationOnce(async () => ({ data: { imdb_id: 'tt1234567' } }))
+        .mockImplementationOnce(async () => ({ data: { id: 1, imdb_id: 'tt1234567' } }))
         .mockImplementationOnce(async () => {
           throw new Error('IMDb unavailable')
         })

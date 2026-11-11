@@ -6,7 +6,7 @@ export default defineConfig([
   ...nextVitals,
   ...nextTypescript,
   {
-    files: ['**/*.cjs'],
+    files: ['**/*.cjs', 'next.config.js'],
     rules: { '@typescript-eslint/no-require-imports': 'off' }
   },
   {

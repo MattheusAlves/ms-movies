@@ -25,6 +25,32 @@ body {
   width: 100%;
 }
 
+.watchlist-warning {
+  position: fixed;
+  bottom: 0;
+  z-index: 110;
+  margin: 0;
+  padding: 1rem;
+  background: #37240d;
+  color: #fff;
+}
+
+.status-message,
+.page-error {
+  color: #fff;
+  background: #292929;
+  padding: 1rem;
+}
+
+.base-page .status-message {
+  grid-column: 1 / -1;
+}
+
+.page-error {
+  margin: 5rem auto 1rem;
+  max-width: 40rem;
+}
+
 .base-layout {
   // width: 100%;
   overflow-x: hidden;

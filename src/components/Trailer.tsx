@@ -13,14 +13,16 @@ interface Props {
   mediaId: string
 }
 export default function Trailer({ mediaType, mediaId }: Props): React.JSX.Element {
-  const { data, loading } = useGetTrailer({
+  const { data, error, loading } = useGetTrailer({
     mediaType,
     mediaId
   })
   const videoKey: string | undefined = data?.results?.[0]?.key
   return (
     <div className={styles['media-trailer']}>
-      {loading ? (
+      {error ? (
+        <p className="status-message" role="status">Trailer information is temporarily unavailable.</p>
+      ) : loading ? (
         <Spinner />
       ) : (
         videoKey && (
