@@ -1,8 +1,8 @@
-@import './shared/fonts';
+@use './shared/fonts';
 //header
-@import './components/header';
+@use './components/header';
 //basePage
-@import './components/basePage';
+@use './components/basePage';
 
 // * {
 //   box-sizing: border-box;

@@ -6,8 +6,7 @@ import axios from 'axios'
 
 import BaseLayout from '@/components/layouts/BaseLayout'
 import BasePage from '@/components/layouts/BasePage'
-import Movies from '@/components/Movies'
-import Series from '@/components/Series'
+import PopularGrid from '@/components/PopularGrid'
 
 function reducer(state, action) {
   switch (action.type) {
@@ -17,7 +16,7 @@ function reducer(state, action) {
       throw new Error()
   }
 }
-const Index: React.ReactNode = props => {
+const Index = props => {
   const [state, dispatch] = useReducer(reducer, { page: 4 })
   const [size, setSize] = useState(4)
   const router = useRouter()
@@ -37,7 +36,8 @@ const Index: React.ReactNode = props => {
             <Head>
               <title>MS - Filmes</title>
             </Head>
-            <Movies
+            <PopularGrid
+              resource="movies"
               initialData={props.initialData}
               index={state.page}
               setCurrentSize={setCurrentSize}
@@ -48,7 +48,8 @@ const Index: React.ReactNode = props => {
             <Head>
               <title>MS - Séries</title>
             </Head>
-            <Series
+            <PopularGrid
+              resource="series"
               initialData={props.initialData}
               index={state.page}
               setCurrentSize={setCurrentSize}
@@ -61,29 +62,33 @@ const Index: React.ReactNode = props => {
 }
 
 export const getStaticProps: GetStaticProps = async context => {
-  const result = await axios.get(
-    context.params.type === 'movies'
-      ? 'https://api.themoviedb.org/4/discover/movie?sort_by=popularity.desc'
-      : 'https://api.themoviedb.org/4/discover/tv?sort_by=popularity.desc',
-    {
-      params: {
-        api_key: process.env.API_KEY,
-        page: 1
+  try {
+    const result = await axios.get(
+      context.params.type === 'movies'
+        ? 'https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc'
+        : 'https://api.themoviedb.org/3/discover/tv?sort_by=popularity.desc',
+      {
+        params: {
+          api_key: process.env.API_KEY,
+          page: 1
+        }
       }
-    }
-  )
-  const titles = [result.data]
+    )
+    const titles = [result.data]
 
-  return { props: { initialData: titles }, revalidate: 5600 }
+    return { props: { initialData: titles }, revalidate: 5600 }
+  } catch {
+    throw new Error('Unable to load discovery data from TMDB')
+  }
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [
-      { params: { type: 'movies' } }, // See the "paths" section below
+      { params: { type: 'movies' } },
       { params: { type: 'series' } }
     ],
-    fallback: false // See the "fallback" section below
+    fallback: false
   }
 }
 

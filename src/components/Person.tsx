@@ -13,7 +13,7 @@ import 'pure-react-carousel/dist/react-carousel.es.css'
 import { useGetActors } from '@/actions/actors'
 import styles from '@/styles/Media_info.module.scss'
 
-const Persons = ({ mediaType, mediaId }): JSX.Element => {
+const Persons = ({ mediaType, mediaId }): React.JSX.Element => {
   const { data, error, loading } = useGetActors({ mediaType, mediaId })
   return (
     <div className={styles['characters-container']}>
@@ -42,9 +42,10 @@ const Persons = ({ mediaType, mediaId }): JSX.Element => {
                           width={170}
                           height={250}
                           quality={75}
+                          alt={person.original_name || person.name || ''}
                           className={styles.poster}
                           onLoad={e =>
-                            (e.target as HTMLImageElement).parentElement.parentElement.classList.remove(
+                            e.currentTarget.parentElement?.classList.remove(
                               styles.loading
                             )
                           }

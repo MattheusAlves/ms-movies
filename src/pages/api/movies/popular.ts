@@ -1,25 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import axios from 'axios'
+
+import { tmdbGet } from '@/util/tmdb'
 
 export default async function popular(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const { page = 1 } = req.query
+  const { page } = req.query
   try {
-    const movies = await axios.get(
-      'https://api.themoviedb.org/4/discover/movie?sort_by=popularity.desc&language=pt-BR',
-      {
-        params: {
-          api_key: process.env.API_KEY,
-          page: page || 1
-        }
-      }
-    )
-    const data = movies.data
+    const data = await tmdbGet('3/discover/movie', {
+      sort_by: 'popularity.desc',
+      language: 'pt-BR',
+      page: page || 1
+    })
     res.status(200).json(data)
   } catch (e) {
-    console.log(e.data)
-    res.status(e.status || 400).json({ message: 'Api error' })
+    res.status(e.response?.status ?? 500).json({ message: 'Api error' })
   }
 }

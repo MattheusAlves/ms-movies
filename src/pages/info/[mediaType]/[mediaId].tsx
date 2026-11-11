@@ -10,7 +10,7 @@ import WatchProviders from '@/components/WatchProviders'
 
 import styles from '@/styles/Media_info.module.scss'
 
-const Title = ({ data, mediaType, imdbRating }): JSX.Element => {
+const Title = ({ data, mediaType, imdbRating }): React.JSX.Element => {
   return (
     <BaseLayout>
       <div className={styles['media-container']}>
@@ -21,9 +21,14 @@ const Title = ({ data, mediaType, imdbRating }): JSX.Element => {
           <div className={styles['media-presentation-wrapper']}>
             <div className={styles['media-presentation-poster-wrapper']}>
               <Image
-                src={`https://image.tmdb.org/t/p/w400${data.poster_path}`}
-                quality={100}
-                layout="fill"
+                src={
+                  data.poster_path
+                    ? `https://image.tmdb.org/t/p/w400${data.poster_path}`
+                    : '/404.png'
+                }
+                alt={data.title || data.name || ''}
+                fill
+                sizes="(max-width: 768px) 100vw, 400px"
                 className={styles['media-presentation-poster']}
               />
             </div>
@@ -53,10 +58,8 @@ const Title = ({ data, mediaType, imdbRating }): JSX.Element => {
                     .join('/')}`}</span>
                 )}
               </div>
-              {console.log('budget', data.budget)}
               {!!data.budget && data.budget > 0 && (
                 <div className={styles.budget}>
-                  {console.log(data.budget)}
                   <span>{`Orçamento: ${parseInt(data.budget).toLocaleString(
                     'US'
                   )} USD`}</span>
@@ -87,15 +90,20 @@ const Title = ({ data, mediaType, imdbRating }): JSX.Element => {
 }
 
 export const getServerSideProps: GetServerSideProps = async context => {
-  const URL =
+  const tmdbUrl =
     context.params.mediaType === 'movie'
       ? `https://api.themoviedb.org/3/movie/${context.params.mediaId}?language=pt-BR`
       : `https://api.themoviedb.org/3/tv/${context.params.mediaId}?language=pt-BR`
-  const result = await axios.get(URL, {
-    params: {
-      api_key: process.env.API_KEY
-    }
-  })
+  let result
+  try {
+    result = await axios.get(tmdbUrl, {
+      params: {
+        api_key: process.env.API_KEY
+      }
+    })
+  } catch {
+    throw new Error('Unable to load title data from TMDB')
+  }
   let imdbRating = null
   if (result.data.imdb_id && process.env.RAPIDAPI_KEY) {
     try {

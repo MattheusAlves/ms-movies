@@ -1,7 +1,4 @@
-//colors
-$base-color: #121212; //background
-$principal: #4b45ff;
-$secondary: #4571ff;
+@use './colors' as *;
 
 .nav-bar {
   position: fixed;
@@ -128,7 +125,7 @@ $secondary: #4571ff;
   color: $principal !important;
 }
 //cellphones
-@media screen and(max-width:768px) {
+@media screen and (max-width:768px) {
   .separator {
     display: none;
   }

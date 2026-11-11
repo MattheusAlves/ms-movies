@@ -1,6 +1,6 @@
-@import './components/person';
-@import './components/trailer';
-@import './components/watchProviders';
+@use './components/person';
+@use './components/trailer';
+@use './components/watchProviders';
 
 .media {
   &-container {

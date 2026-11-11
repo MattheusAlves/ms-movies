@@ -5,7 +5,7 @@ import { ContentTypeContext } from '@/contexts/ContentTypeContext'
 interface Props {
   rightNav: boolean
 }
-const Search = (props: Props): JSX.Element => {
+const Search = (props: Props): React.JSX.Element => {
   const isNavActive = props.rightNav
   useEffect(() => setIsActive(false), [isNavActive])
   const [isActive, setIsActive] = useState(false)
@@ -20,9 +20,12 @@ const Search = (props: Props): JSX.Element => {
     setIsActive(!isActive)
   }
 
-  const handleSearch = () => {
+  const handleSearch = (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault()
+    const query = searchQuery.trim()
+    if (!query) return
     changeContentType('')
-    router.push(`/search/${searchQuery}`)
+    router.push(`/search/${encodeURIComponent(query)}`)
   }
   return (
     <div className="search-wrapper">
@@ -36,7 +39,6 @@ const Search = (props: Props): JSX.Element => {
         />
       </form>
       <BsSearch
-        // color="#4b45ff"
         size={18}
         className="search-icon"
         onClick={toggleActive}

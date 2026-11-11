@@ -1,6 +1,8 @@
-import { useSWRInfinite } from 'swr'
+import useSWRInfinite from 'swr/infinite'
+
 import fetcher from '@/util/fetcher'
-interface returnedData {
+
+interface SwrResult {
   data?: Record<string, any>
   error?: Record<string, any>
   loading?: boolean
@@ -8,30 +10,24 @@ interface returnedData {
   size?: number
   setSize?: (size: number) => Promise<any>
 }
+
 interface Props {
   initialData: unknown[]
 }
-const getMovieKey = pageIndex => {
-  // if (pageIndex === 0) return '/api/movies/popular?page=1 '
-  return `/api/movies/popular?page=${pageIndex + 1}` // SWR key
-}
-const getSerieKey = pageIndex => {
-  return `/api/series/popular?page=${pageIndex + 1}`
-}
 
-export const useGetPopularMovies = ({ initialData }: Props): returnedData => {
-  const { data, error, ...rest } = useSWRInfinite(getMovieKey, fetcher, {
-    initialSize: 4,
-    initialData,
-    persistSize: false
-  })
-  return { data, error, loading: !data && !error, ...rest }
-}
-export const useGetPopularSeries = ({ initialData }: Props): returnedData => {
-  const { data, error, ...rest } = useSWRInfinite(getSerieKey, fetcher, {
-    initialSize: 4,
-    initialData,
-    persistSize: false
-  })
+// One hook for both grids: the SWR keys only differ by resource.
+export const useGetPopular = (
+  resource: 'movies' | 'series',
+  { initialData }: Props
+): SwrResult => {
+  const { data, error, ...rest } = useSWRInfinite(
+    pageIndex => `/api/${resource}/popular?page=${pageIndex + 1}`, // SWR key
+    fetcher,
+    {
+      initialSize: 4,
+      fallbackData: initialData,
+      persistSize: false
+    }
+  )
   return { data, error, loading: !data && !error, ...rest }
 }

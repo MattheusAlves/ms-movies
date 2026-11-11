@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 interface ContentTypeContextData {
   contentType: string
-  changeContentType: (string) => void
+  changeContentType: (newContentType: string) => void
 }
 interface ContentTypeProviderProps {
   children: React.ReactNode
@@ -11,7 +11,7 @@ export const ContentTypeContext = createContext({} as ContentTypeContextData)
 
 export function ContentTypeProvider({
   children
-}: ContentTypeProviderProps): JSX.Element {
+}: ContentTypeProviderProps): React.JSX.Element {
   const [contentType, setContentType] = useState('')
   const router = useRouter()
   useEffect(() => {

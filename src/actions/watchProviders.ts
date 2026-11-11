@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import fetcher from '@/util/fetcher'
 
-interface returnedData {
+interface SwrResult {
   data?: Record<string, any>
   error?: Record<string, any>
   loading?: boolean
@@ -13,7 +13,7 @@ interface Props {
 export const useGetWatchProviders = ({
   mediaType,
   mediaId
-}: Props): returnedData => {
+}: Props): SwrResult => {
   const { data, error, ...rest } = useSWR(
     `/api/info/watchproviders/${mediaType}/${mediaId}`,
     fetcher

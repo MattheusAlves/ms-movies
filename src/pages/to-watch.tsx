@@ -6,8 +6,8 @@ import BasePage from '@/components/layouts/BasePage'
 import RenderItems from '@/components/shared/RenderItems'
 import { ToWatchListContext } from '@/contexts/ToWatchListContext'
 
-export default function ToWatchList(): JSX.Element {
-  const { ToWatchList } = useContext(ToWatchListContext)
+export default function ToWatchList(): React.JSX.Element {
+  const { toWatchList } = useContext(ToWatchListContext)
   return (
     <BaseLayout>
       <BasePage callback={() => null}>
@@ -15,8 +15,8 @@ export default function ToWatchList(): JSX.Element {
           <Head>
             <title>MS - Para Assistir</title>
           </Head>
-          {ToWatchList && (
-            <RenderItems data={[{ results: [...ToWatchList] }]} />
+          {toWatchList && (
+            <RenderItems data={[{ results: [...toWatchList] }]} />
           )}
         </>
       </BasePage>

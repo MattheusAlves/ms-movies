@@ -1,29 +1,19 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { isMobile, BrowserView } from 'react-device-detect'
+import { BrowserView } from 'react-device-detect'
 import { ToWatchListContext } from '@/contexts/ToWatchListContext'
+import { MediaSummary } from '@/util/media'
 interface Props {
   src: string
-  info: {
-    title: string
-    voteAverage: number
-    overview: string
-    releaseDate: string
-    mediaType: string
-    mediaId: number
-    ['poster_path']: string
-  }
+  info: MediaSummary
 }
 
-const PosterCard = (props: Props): JSX.Element => {
+const PosterCard = (props: Props): React.JSX.Element => {
   const { src, info } = props
   const router = useRouter()
-  const { addToList, itemsId } = useContext(ToWatchListContext)
-  const handleImageError = image => {
-    image.target.src = '/404.png'
-    image.target.srcset = '/404.png'
-  }
+  const { toggleWatchItem, itemsId } = useContext(ToWatchListContext)
+  const [imageError, setImageError] = useState(false)
   const handlePosterClick = () => {
     router.push(
       `/info/${
@@ -31,28 +21,28 @@ const PosterCard = (props: Props): JSX.Element => {
       }/${info.mediaId}`
     )
   }
-  const handleAddToWatchList = e => {
+  const handleToggleWatchItem = e => {
     e.stopPropagation()
-    addToList(info)
+    toggleWatchItem(info)
   }
   return (
     <div className="poster-wrapper" onClick={handlePosterClick}>
       <Image
-        src={src}
+        src={imageError ? '/404.png' : src}
         width={256}
         height={360}
-        quality={isMobile ? 30 : 30}
-        onError={e => handleImageError(e)}
+        alt={info.title || ''}
+        onError={() => setImageError(true)}
       />
-      <BrowserView viewClassName="poster-info-container">
+      <BrowserView className="poster-info-container">
         <span className="poster-info-vote_avarage-wrapper">
           <p className="poster-info-vote_avarage">{info.voteAverage || ''}</p>
         </span>
         <span
           className="poster-info-add_to_watch_list"
-          onClick={e => handleAddToWatchList(e)}
+          onClick={handleToggleWatchItem}
         >
-          {itemsId && itemsId.includes(Number(info.mediaId)) ? (
+          {itemsId.includes(info.mediaId) ? (
             <p className="poster-info-add_to_watch_list-heart">❤</p>
           ) : (
             <p>+</p>

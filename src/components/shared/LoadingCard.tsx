@@ -1,9 +1,9 @@
-import ReactLoading from 'react-loading'
+import Spinner from './Spinner'
 
-const LoadingCard = (): JSX.Element => {
+const LoadingCard = (): React.JSX.Element => {
   return (
     <div className="card-loading">
-      <ReactLoading type="spinningBubbles" color="#4B45FF" />
+      <Spinner />
     </div>
   )
 }

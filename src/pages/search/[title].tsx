@@ -6,7 +6,7 @@ import RenderItems from '@/components/shared/RenderItems'
 import BaseLayout from '@/components/layouts/BaseLayout'
 import BasePage from '@/components/layouts/BasePage'
 
-const Search = (props): JSX.Element => {
+const Search = (props): React.JSX.Element => {
   return (
     <BaseLayout>
       <BasePage callback={() => null}>
@@ -24,12 +24,16 @@ const Search = (props): JSX.Element => {
 export default Search
 
 export const getServerSideProps: GetServerSideProps = async context => {
-  const result = await axios.get('https://api.themoviedb.org/4/search/multi/', {
-    params: {
-      api_key: process.env.API_KEY,
-      query: context.params.title
-    }
-  })
-  const titles = [result.data]
-  return { props: { data: titles } }
+  try {
+    const result = await axios.get('https://api.themoviedb.org/4/search/multi/', {
+      params: {
+        api_key: process.env.API_KEY,
+        query: context.params.title
+      }
+    })
+    const titles = [result.data]
+    return { props: { data: titles } }
+  } catch {
+    throw new Error('Unable to load search data from TMDB')
+  }
 }

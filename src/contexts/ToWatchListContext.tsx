@@ -1,79 +1,68 @@
-import { createContext, useState, useContext, useEffect } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import Cookies from 'js-cookie'
 
 import { ContentTypeContext } from '@/contexts/ContentTypeContext'
+import { MediaSummary } from '@/util/media'
 
 interface ToWatchListContextData {
-  ToWatchList: Array<ToWatchList>
+  toWatchList: Array<MediaSummary>
   itemsId: Array<number>
-  addToList: (data: ToWatchList) => void
+  toggleWatchItem: (item: MediaSummary) => void
 }
 interface ToWatchListContextProps {
   children: React.ReactNode
-}
-interface ToWatchList {
-  mediaId: number
-  title: string
-  overview: string
-  mediaType: string
-  releaseDate: string
-  ['poster_path']: string
 }
 
 export const ToWatchListContext = createContext({} as ToWatchListContextData)
 
 export function ToWatchListProvider({
   children
-}: ToWatchListContextProps): JSX.Element {
-  const [ToWatchList, setToWatchList] = useState<Array<ToWatchList>>(null)
-  const [itemsId, setItemsId] = useState<Array<number>>(null)
+}: ToWatchListContextProps): React.JSX.Element {
+  const [toWatchList, setToWatchList] = useState<Array<MediaSummary> | null>(
+    null
+  )
   const { contentType } = useContext(ContentTypeContext)
 
-  const addToList = data => {
-    console.log('data', data)
-    if (!data.mediaType) {
-      data.mediaType = contentType === 'movies' ? 'movie' : 'tv'
-    }
-    if (itemsId && itemsId.includes(data.mediaId)) {
-      deleteFromList(data)
-    } else {
-      ToWatchList
-        ? setToWatchList([...ToWatchList, { ...data }])
-        : setToWatchList([{ ...data }])
-      itemsId
-        ? setItemsId([...itemsId, data.mediaId])
-        : setItemsId([data.mediaId])
-    }
+  // Derived from the list so the two can never fall out of sync.
+  const itemsId = useMemo(
+    () => (toWatchList ?? []).map(item => item.mediaId),
+    [toWatchList]
+  )
+
+  const toggleWatchItem = (item: MediaSummary): void => {
+    const newItem: MediaSummary = item.mediaType
+      ? item
+      : { ...item, mediaType: contentType === 'movies' ? 'movie' : 'tv' }
+    setToWatchList(list => {
+      const current = list ?? []
+      return current.some(saved => saved.mediaId === newItem.mediaId)
+        ? current.filter(saved => saved.mediaId !== newItem.mediaId)
+        : [...current, { ...newItem }]
+    })
   }
-  const deleteFromList = data => {
-    const newItemsId = itemsId.filter(item => item !== data.mediaId)
-    const newToWatchList = ToWatchList.filter(
-      item => item.mediaId !== data.mediaId
-    )
-    setItemsId(newItemsId)
-    setToWatchList(newToWatchList)
-  }
+
+  // Both cookies keep being written so a rolled-back version still finds its data.
   useEffect(() => {
-    if (itemsId) Cookies.set('itemsId', itemsId)
-  }, [itemsId])
+    if (!toWatchList) return
+    Cookies.set('ToWatchList', JSON.stringify(toWatchList))
+    Cookies.set('itemsId', JSON.stringify(itemsId))
+  }, [toWatchList, itemsId])
+
   useEffect(() => {
-    console.log(ToWatchList)
-    if (ToWatchList) Cookies.set('ToWatchList', ToWatchList)
-  }, [ToWatchList])
-  useEffect(() => {
-    const jsonItems = Cookies.get('itemsId')
-    const jsonToWatchList = Cookies.get('ToWatchList')
-    if (jsonItems) {
-      const items = JSON.parse(Cookies.get('itemsId'))
-      setItemsId(items)
-    }
-    if (jsonToWatchList) {
-      const ToWatchListData = JSON.parse(Cookies.get('ToWatchList'))
-      setToWatchList(ToWatchListData)
-    }
+    const savedList = Cookies.get('ToWatchList')
+    if (savedList) setToWatchList(JSON.parse(savedList))
   }, [])
+
   return (
-    <ToWatchListContext.Provider value={{ ToWatchList, addToList, itemsId }}>
+    <ToWatchListContext.Provider
+      value={{ toWatchList, toggleWatchItem, itemsId }}
+    >
       {children}
     </ToWatchListContext.Provider>
   )

@@ -3,25 +3,18 @@ import Link from 'next/link'
 
 import Search from '@/components/shared/Search'
 import { ContentTypeContext } from '@/contexts/ContentTypeContext'
-import { HeaderContext } from '@/contexts/HeaderContext'
 
-const Header = (): JSX.Element => {
+const Header = (): React.JSX.Element => {
   const [isActive, setIsActive] = useState(false)
+  const [transparent, setTransparent] = useState(true)
   const { contentType, changeContentType } = useContext(ContentTypeContext)
-  const { transparent, toggleTransparency } = useContext(HeaderContext)
   useEffect(() => {
+    const onScroll = () => setTransparent(window.scrollY <= 10)
     window.addEventListener('scroll', onScroll)
     return () => {
       window.removeEventListener('scroll', onScroll)
     }
   }, [])
-  const onScroll = e => {
-    if (window.scrollY > 10) {
-      toggleTransparency(false)
-    } else {
-      toggleTransparency(true)
-    }
-  }
   const toggleBurger = () => {
     setIsActive(!isActive)
   }
@@ -35,30 +28,26 @@ const Header = (): JSX.Element => {
           <Search rightNav={isActive} />
         </li>
         <li>
-          <Link href="/movies">
-            <a
-              className={contentType === 'movies' ? 'currentLink' : ''}
-              onClick={() => changeContentType('movies')}
-            >
-              Filmes
-            </a>
+          <Link
+            href="/movies"
+            className={contentType === 'movies' ? 'currentLink' : ''}
+            onClick={() => changeContentType('movies')}
+          >
+            Filmes
           </Link>
         </li>
         <li>
-          <Link href="/series">
-            <a
-              className={contentType === 'series' ? 'currentLink' : ''}
-              onClick={() => changeContentType('series')}
-            >
-              Séries
-            </a>
+          <Link
+            href="/series"
+            className={contentType === 'series' ? 'currentLink' : ''}
+            onClick={() => changeContentType('series')}
+          >
+            Séries
           </Link>
         </li>
         <span className="separator" />
         <li>
-          <Link href="/to-watch">
-            <a>Minha lista</a>
-          </Link>
+          <Link href="/to-watch">Minha lista</Link>
         </li>
       </ul>
       <div className="burger" onClick={() => toggleBurger()}>

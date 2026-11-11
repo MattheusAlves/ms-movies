@@ -1,22 +1,16 @@
 module.exports = {
-    images: {
-        domains: ['image.tmdb.org', 'localhost']
-    },
-    async redirects() {
-        return [
-            {
-                source: '/',
-                destination: '/movies',
-                permanent: true
-            }
-        ]
-    },
-    webpack(config) {
-        config.module.rules.push({
-            test: /\.svg$/,
-            use: ["@svgr/webpack"]
-        });
-
-        return config;
-    }
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'image.tmdb.org', pathname: '/t/p/**' }
+    ]
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/movies',
+        permanent: true
+      }
+    ]
+  }
 }

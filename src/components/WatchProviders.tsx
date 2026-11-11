@@ -9,11 +9,11 @@ interface Props {
 export default function WatchProviders({
   mediaType,
   mediaId
-}: Props): JSX.Element {
-  const { data, error, loading } = useGetWatchProviders({ mediaType, mediaId })
+}: Props): React.JSX.Element {
+  const { data } = useGetWatchProviders({ mediaType, mediaId })
   return data?.results?.BR?.flatrate && data.results.BR.flatrate.length ? (
     <div className={styles['watch-provider-container']}>
-      <p>Disponivel ▼</p>
+      <p>Disponível ▼</p>
       <div className={styles['watch-provider-wrapper']}>
         {data.results.BR.flatrate.map((provider, index) => (
           <span key={index}>{provider.provider_name}</span>
