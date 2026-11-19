@@ -1,50 +1,28 @@
+import { useState } from 'react'
 import { useNavigation } from '@/contexts/NavigationContext'
-import { useState, useEffect } from 'react'
-import { BsSearch } from 'react-icons/bs'
-interface Props {
-  rightNav: boolean
-}
-const Search = (props: Props): React.JSX.Element => {
-  const isNavActive = props.rightNav
-  const [isActive, setIsActive] = useState(false)
-  // Closing or opening the mobile menu resets the search control.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => setIsActive(false), [isNavActive])
-  const [searchQuery, setSearchQuery] = useState('')
+
+export default function Search({ onNavigate }: { onNavigate?: () => void }): React.JSX.Element {
+  const [query, setQuery] = useState('')
   const router = useNavigation()
 
-  const toggleActive = () => {
-    if (searchQuery) {
-      return handleSearch()
-    }
-    setIsActive(!isActive)
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const value = query.trim()
+    if (!value) return
+    onNavigate?.()
+    router.push(`/search/${encodeURIComponent(value)}`)
   }
 
-  const handleSearch = (event?: React.FormEvent<HTMLFormElement>) => {
-    event?.preventDefault()
-    const query = searchQuery.trim()
-    if (!query) return
-    router.push(`/search/${encodeURIComponent(query)}`)
-  }
   return (
-    <div className="search-wrapper">
-      <form onSubmit={handleSearch}>
-        <input
-          type="search"
-          className={isActive ? 'search-input active' : 'search-input'}
-          placeholder="Search"
-          aria-label="Search movies and series"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-        />
-      </form>
-      <BsSearch
-        size={18}
-        className="search-icon"
-        onClick={toggleActive}
-      />
-    </div>
+    <form className="site-search" role="search" onSubmit={submit}>
+      <label className="sr-only" htmlFor="site-search">Search movies and series</label>
+      <input id="site-search" type="search" placeholder="Search titles" value={query} onChange={event => setQuery(event.target.value)} />
+      <button className="search-icon" type="submit" aria-label="Submit search">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <path d="m16 16 4 4" />
+        </svg>
+      </button>
+    </form>
   )
 }
-
-export default Search

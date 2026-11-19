@@ -21,7 +21,7 @@ describe('useGetPopular', () => {
       useSWRInfinite.mockReturnValue({
         data: initialData,
         error: undefined,
-        size: 4,
+        size: 1,
         setSize,
         isValidating: true
       })
@@ -33,7 +33,7 @@ describe('useGetPopular', () => {
       expect(getKey(6)).toBe(`${path}?page=7`)
       expect(useSWRInfinite.mock.calls.at(-1)![1]).toBe(fetcher)
       expect(useSWRInfinite.mock.calls.at(-1)![2]).toEqual({
-        initialSize: 4,
+        initialSize: 1,
         fallbackData: initialData,
         persistSize: false
       })
@@ -42,6 +42,15 @@ describe('useGetPopular', () => {
       expect(result.current.setSize).toBe(setSize)
       expect(result.current.isValidating).toBe(true)
     }
+  })
+
+  it('stops requesting pages after the last or an empty page', () => {
+    useSWRInfinite.mockReturnValue({ data: [], setSize: vi.fn(), isValidating: false })
+    renderHook(() => useGetPopular('movies', { initialData: null }))
+    const getKey = useSWRInfinite.mock.calls.at(-1)![0]
+    expect(getKey(1, { results: [{ id: 1 }], total_pages: 1 })).toBeNull()
+    expect(getKey(1, { results: [] })).toBeNull()
+    expect(getKey(1, { results: [{ id: 1 }], total_pages: 2 })).toBe('/api/movies/popular?page=2')
   })
 
   it('reports loading until data or error arrives', () => {

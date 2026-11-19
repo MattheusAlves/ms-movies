@@ -7,7 +7,7 @@ import '@/styles/global.scss'
 // context
 import { ContentTypeProvider } from '@/contexts/ContentTypeContext'
 import { ToWatchListProvider } from '@/contexts/ToWatchListContext'
-import { PagesNavigationProvider } from '@/contexts/NavigationContext'
+import { PagesNavigationProvider } from '@/contexts/PagesNavigationProvider'
 
 Router.events.on('routeChangeStart', () => NProgress.start())
 Router.events.on('routeChangeComplete', () => NProgress.done())

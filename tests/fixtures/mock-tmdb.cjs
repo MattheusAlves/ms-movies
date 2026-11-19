@@ -22,14 +22,27 @@ nock('https://api.themoviedb.org')
     const url = new URL(uri, 'https://api.themoviedb.org')
     const pathname = url.pathname
     if (pathname === '/3/search/multi' && url.searchParams.get('query') === 'offline-fixture') return [503, { message: 'Fixture outage' }]
+    if (pathname === '/3/search/multi' && url.searchParams.get('query') === 'nothing-fixture') return [200, { results: [] }]
     if (pathname === '/3/movie/999') return [503, { message: 'Fixture outage' }]
+    if (pathname === '/3/movie/998') return [200, { ...movie, id: 998, poster_path: null, genres: [] }]
     if (pathname.includes('/credits')) return [200, { cast }]
-    if (pathname.includes('/videos')) return [200, { results: [{ key: 'fixture-video' }] }]
+    if (pathname.includes('/videos')) return [200, { results: [{ key: 'fixture-video', site: 'YouTube', type: 'Trailer' }] }]
     if (pathname.includes('/watch/providers')) return [200, { results: { BR: { flatrate: [{ provider_name: 'Fixture Stream' }] } } }]
     if (pathname.startsWith('/3/movie/')) return [200, { ...movie, genres: [] }]
     if (pathname.startsWith('/3/tv/')) return [200, { ...series, genres: [] }]
-    if (pathname === '/3/search/multi') return [200, { results: [{ ...movie, media_type: 'movie' }, { ...series, media_type: 'tv' }] }]
-    if (pathname === '/3/discover/movie') return [200, { results: [movie] }]
-    if (pathname === '/3/discover/tv') return [200, { results: [series] }]
+    if (pathname === '/3/search/multi') {
+      const page = Number(url.searchParams.get('page') || 1)
+      return [200, { page, total_pages: 2, results: page === 1
+        ? [{ ...movie, media_type: 'movie' }, { ...series, media_type: 'tv' }]
+        : [{ ...movie, id: 103, title: 'Another Fixture Movie', media_type: 'movie' }] }]
+    }
+    if (pathname === '/3/discover/movie') {
+      const page = Number(url.searchParams.get('page') || 1)
+      return [200, { page, total_pages: 2, results: page === 1 ? [movie] : page === 2 ? [{ ...movie, id: 102, title: 'Fixture Movie Two' }] : [] }]
+    }
+    if (pathname === '/3/discover/tv') {
+      const page = Number(url.searchParams.get('page') || 1)
+      return [200, { page, total_pages: 2, results: page === 1 ? [series] : page === 2 ? [{ ...series, id: 203, name: 'Fixture Series Two' }] : [] }]
+    }
     return [404, { message: 'Unexpected TMDB fixture request' }]
   })

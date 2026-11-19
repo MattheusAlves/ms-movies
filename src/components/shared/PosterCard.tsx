@@ -1,63 +1,51 @@
-import { useContext, useState } from 'react'
-import Image from 'next/image'
-import { useNavigation } from '@/contexts/NavigationContext'
-import { ContentTypeContext } from '@/contexts/ContentTypeContext'
-import { ToWatchListContext } from '@/contexts/ToWatchListContext'
-import { MediaSummary } from '@/util/media'
-interface Props {
-  src: string
-  info: MediaSummary
-}
+'use client'
 
-const PosterCard = (props: Props): React.JSX.Element => {
-  const { src, info } = props
-  const router = useNavigation()
+import { useContext, useId, useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { ContentTypeContext } from '@/contexts/ContentTypeContext'
+import WatchlistButton from '@/components/shared/WatchlistButton'
+import type { MediaSummary } from '@/util/media'
+
+export default function PosterCard({ src, info, featured = false }: { src: string; info: MediaSummary; featured?: boolean }): React.JSX.Element {
   const { contentType } = useContext(ContentTypeContext)
-  const { toggleWatchItem, isWatchItemSaved, canEdit } = useContext(ToWatchListContext)
-  const mediaType = info.mediaType || (contentType === 'movies' ? 'movie' : contentType === 'series' ? 'tv' : '')
-  const saved = isWatchItemSaved(info)
   const [imageError, setImageError] = useState(false)
-  const handlePosterClick = () => {
-    if (mediaType) router.push(`/info/${mediaType}/${info.mediaId}`)
-  }
-  const handleToggleWatchItem = e => {
-    e.stopPropagation()
-    toggleWatchItem(info)
-  }
+  const summaryId = useId()
+  const mediaType = info.mediaType || (contentType === 'movies' ? 'movie' : contentType === 'series' ? 'tv' : '')
+  const valid = (mediaType === 'movie' || mediaType === 'tv') && Number.isSafeInteger(info.mediaId) && info.mediaId > 0
+  const href = `/info/${mediaType}/${info.mediaId}`
+  const title = info.title || 'Untitled'
+  const image = (
+    <Image
+      src={imageError ? '/404.png' : src}
+      width={256}
+      height={360}
+      sizes="(max-width: 480px) 46vw, (max-width: 650px) 30vw, (max-width: 900px) 23vw, (max-width: 1200px) 18vw, 230px"
+      alt={title}
+      loading={featured ? 'eager' : 'lazy'}
+      fetchPriority={featured ? 'high' : 'auto'}
+      onError={() => setImageError(true)}
+    />
+  )
   return (
-    <div className="poster-wrapper" onClick={handlePosterClick}>
-      <Image
-        src={imageError ? '/404.png' : src}
-        width={256}
-        height={360}
-        alt={info.title || ''}
-        onError={() => setImageError(true)}
-      />
-      <div className="poster-info-container">
-        <span className="poster-info-vote_avarage-wrapper">
-          <p className="poster-info-vote_avarage">{info.voteAverage || ''}</p>
-        </span>
-        <button
-          type="button"
-          className="poster-info-add_to_watch_list"
-          onClick={handleToggleWatchItem}
-          disabled={!canEdit || !mediaType || !Number.isSafeInteger(info.mediaId) || info.mediaId <= 0}
-          aria-label={`${saved ? 'Remove' : 'Add'} ${info.title} ${saved ? 'from' : 'to'} watchlist`}
-          aria-pressed={saved}
-        >
-          {saved ? (
-            <p className="poster-info-add_to_watch_list-heart">❤</p>
-          ) : (
-            <p>+</p>
-          )}
-        </button>
-        <p className="poster-info-title">{info.title || ''}</p>
-        <p className="poster-info-overview">{`${
-          info.overview ? info.overview.slice(0, 95) : ''
-        }...`}</p>
+    <article className="poster-wrapper">
+      <div className="poster-art">
+        {valid ? (
+          <Link className="poster-image" href={href} aria-label={`View ${title}`} aria-describedby={summaryId}>
+            {image}
+            <span className="poster-overlay" aria-hidden="true"><span>Synopsis</span><span>{info.overview || 'No synopsis is available yet.'}</span></span>
+          </Link>
+        ) : <div className="poster-image">{image}</div>}
+        <WatchlistButton item={info} />
       </div>
-    </div>
+      {valid && <p id={summaryId} className="sr-only">{info.overview || 'No synopsis is available yet.'}</p>}
+      <div className="poster-caption">
+        {valid ? <Link className="poster-title" href={href}>{title}</Link> : <span className="poster-title">{title}</span>}
+        <p className="poster-meta">
+          <span>{info.releaseDate ? info.releaseDate.slice(0, 4) : 'Year unavailable'}</span>
+          {info.voteAverage > 0 && <span aria-label={`TMDB rating ${info.voteAverage.toFixed(1)} out of 10`}>★ {info.voteAverage.toFixed(1)}</span>}
+        </p>
+      </div>
+    </article>
   )
 }
-
-export default PosterCard

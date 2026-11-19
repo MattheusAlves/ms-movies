@@ -13,7 +13,7 @@ export interface MediaSummary {
   backdropPath: string
 }
 
-interface RawMediaItem extends Partial<MediaSummary> {
+export interface RawMediaItem extends Partial<MediaSummary> {
   id?: number
   name?: string
   release_date?: string | null

@@ -1,6 +1,6 @@
 'use client'
 
-import { AppNavigationProvider } from '@/contexts/NavigationContext'
+import { AppNavigationProvider } from '@/contexts/AppNavigationProvider'
 import { ContentTypeProvider } from '@/contexts/ContentTypeContext'
 import { ToWatchListProvider } from '@/contexts/ToWatchListContext'
 import NavigationProgress from './NavigationProgress'

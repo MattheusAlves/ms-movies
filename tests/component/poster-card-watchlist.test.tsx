@@ -48,19 +48,18 @@ afterEach(() => {
 describe('PosterCard watchlist toggle', () => {
   it('navigates to the selected title', () => {
     renderCard(1)
-    fireEvent.click(screen.getByAltText('Fixture 1'))
-    expect(push).toHaveBeenCalledWith('/info/movie/1')
+    expect(screen.getByRole('link', { name: 'View Fixture 1' })).toHaveAttribute('href', '/info/movie/1')
   })
 
   it('toggles the saved state on repeated clicks', () => {
     renderCard(1)
-    expect(screen.getByText('+')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Add Fixture 1 to watchlist' })).toBeInTheDocument()
 
-    fireEvent.click(screen.getByText('+'))
-    expect(screen.getByText('❤')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Add Fixture 1 to watchlist' }))
+    expect(screen.getByRole('button', { name: 'Remove Fixture 1 from watchlist' })).toHaveAttribute('aria-pressed', 'true')
 
-    fireEvent.click(screen.getByText('❤'))
-    expect(screen.getByText('+')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Fixture 1 from watchlist' }))
+    expect(screen.getByRole('button', { name: 'Add Fixture 1 to watchlist' })).toBeInTheDocument()
   })
 
   it('persists through versioned storage across a simulated reload', () => {
@@ -71,14 +70,14 @@ describe('PosterCard watchlist toggle', () => {
 
     // Fresh provider state reads versioned storage on mount, like a page reload.
     renderCard(2)
-    expect(screen.getByText('❤')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Remove Fixture 2 from watchlist' })).toBeInTheDocument()
     expect(JSON.parse(localStorage.getItem(watchlistConfig.storageKey)!).items).toHaveLength(1)
   })
 
   it('toggling off leaves an empty saved list', () => {
     renderCard(3)
     fireEvent.click(screen.getByText('+'))
-    fireEvent.click(screen.getByText('❤'))
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Fixture 3 from watchlist' }))
     expect(JSON.parse(localStorage.getItem(watchlistConfig.storageKey)!).items).toEqual([])
   })
 

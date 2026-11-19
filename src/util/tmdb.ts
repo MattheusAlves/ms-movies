@@ -50,8 +50,9 @@ export interface CastMember {
   character?: string
 }
 
-export interface VideoResults { results: Array<{ key: string }> }
-export interface ProviderResults { results: Record<string, { flatrate?: Array<{ provider_name: string }> }> }
+export interface VideoResults { results: Array<{ key: string; site?: string; type?: string }> }
+interface Provider { provider_id?: number; provider_name: string }
+export interface ProviderResults { results: Record<string, { flatrate?: Provider[]; rent?: Provider[]; buy?: Provider[]; free?: Provider[]; ads?: Provider[] }> }
 
 export class TmdbError extends Error {
   constructor(message: string, readonly status: number) {
@@ -129,9 +130,9 @@ export const tmdb = {
     })
     return mediaPage(data)
   },
-  async search(query: unknown): Promise<MediaPage> {
+  async search(query: unknown, page?: unknown): Promise<MediaPage> {
     if (typeof query !== 'string' || !query.trim() || query.length > tmdbConfig.maxSearchLength) throw new TmdbError('Invalid search query', 400)
-    const data = await request(endpoint.tmdb.search, { query: query.trim(), language: contentConfig.language })
+    const data = await request(endpoint.tmdb.search, { query: query.trim(), language: contentConfig.language, page: validPage(page) })
     return mediaPage(data)
   },
   async title(mediaType: unknown, mediaId: unknown): Promise<TitleDetails> {
@@ -163,7 +164,7 @@ export const tmdb = {
     const data = await request(endpoint.tmdb.watchProviders(mediaType, mediaId as string))
     if (!object(data) || !object(data.results)) throw new TmdbError('Invalid TMDB response', 502)
     for (const region of Object.values(data.results)) {
-      if (!object(region) || (region.flatrate != null && (!Array.isArray(region.flatrate) || region.flatrate.some(provider => !object(provider) || typeof provider.provider_name !== 'string')))) {
+      if (!object(region) || ['flatrate', 'rent', 'buy', 'free', 'ads'].some(key => region[key] != null && (!Array.isArray(region[key]) || (region[key] as unknown[]).some(provider => !object(provider) || typeof provider.provider_name !== 'string')))) {
         throw new TmdbError('Invalid TMDB response', 502)
       }
     }

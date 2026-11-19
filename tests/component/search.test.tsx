@@ -20,13 +20,13 @@ const renderSearch = () => {
       {children}
     </NavigationContext.Provider>
   )
-  return render(<Search rightNav={false} />, { wrapper })
+  return render(<Search />, { wrapper })
 }
 
 describe('Search', () => {
   it('encodes the trimmed query on submit', () => {
     const { container } = renderSearch()
-    fireEvent.change(screen.getByPlaceholderText('Search'), {
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search movies and series' }), {
       target: { value: '  Space & Time / 2026  ' }
     })
     fireEvent.submit(container.querySelector('form')!)
@@ -35,7 +35,7 @@ describe('Search', () => {
 
   it('does not navigate with an empty query', () => {
     const { container } = renderSearch()
-    fireEvent.change(screen.getByPlaceholderText('Search'), {
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search movies and series' }), {
       target: { value: '   ' }
     })
     fireEvent.submit(container.querySelector('form')!)

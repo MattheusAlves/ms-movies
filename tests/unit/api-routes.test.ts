@@ -6,6 +6,7 @@ vi.mock('axios', () => ({ default: { get: axiosGet } }))
 
 import { GET as moviesPopular } from '@/app/api/movies/popular/route'
 import { GET as seriesPopular } from '@/app/api/series/popular/route'
+import { GET as search } from '@/app/api/search/route'
 import { GET as cast } from '@/app/api/cast/[mediaType]/[mediaId]/route'
 import { GET as trailer } from '@/app/api/info/trailer/[mediaType]/[mediaId]/route'
 import { GET as watchProviders } from '@/app/api/info/watchproviders/[mediaType]/[mediaId]/route'
@@ -54,6 +55,14 @@ describe('API routes proxy TMDB', () => {
     expect(await res.json()).toEqual([{ id: 1, known_for_department: 'Acting', profile_path: '/a.jpg' }])
   })
 
+  it('forwards encoded search queries and pages without caching', async () => {
+    axiosGet.mockResolvedValue({ data: { page: 2, total_pages: 2, results: [] } })
+    const res = await search(request('?query=Space%20%26%20Time&page=2'))
+    expect(res.status).toBe(200)
+    expect(res.headers.get('Cache-Control')).toBe('no-store')
+    expect(axiosGet.mock.calls[0][1].params).toEqual({ api_key: 'test-key', language: 'en-US', query: 'Space & Time', page: 2 })
+  })
+
   it('forwards trailer and watch provider data', async () => {
     axiosGet.mockResolvedValueOnce({ data: { results: [] } }).mockResolvedValueOnce({ data: { results: {} } })
     expect((await trailer(request(), context())).status).toBe(200)
@@ -94,6 +103,10 @@ describe('API routes proxy TMDB', () => {
       () => moviesPopular(request('?page=0')),
       () => seriesPopular(request('?page=501')),
       () => moviesPopular(request('?page=1&page=2')),
+      () => search(request('?query=test&page=501')),
+      () => search(request('?query=test&page=1&page=2')),
+      () => search(request('?query=test&query=other')),
+      () => search(request('?query=%20')),
       () => cast(request(), context('person', '101')),
       () => trailer(request(), context('movie', '../1'))
     ]) {

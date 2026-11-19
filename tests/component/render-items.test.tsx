@@ -59,7 +59,7 @@ describe('RenderItems', () => {
   it('builds the TMDB image URL from the poster, falling back to the backdrop', () => {
     renderItems()
     expect(screen.getByAltText('A movie').getAttribute('src')).toBe(
-      'https://image.tmdb.org/t/p/w300/poster.jpg'
+      'https://image.tmdb.org/t/p/w500/poster.jpg'
     )
     expect(screen.getByAltText('A series').getAttribute('src')).toBe(
       'https://image.tmdb.org/t/p/w300/backdrop.jpg'
@@ -71,10 +71,18 @@ describe('RenderItems', () => {
     expect(screen.getByAltText('Saved').getAttribute('src')).toBe('/404.png')
   })
 
-  it('shows the title and truncated overview', () => {
+  it('prioritizes the first poster and lazy-loads the rest', () => {
+    renderItems()
+    expect(screen.getByAltText('A movie')).toHaveAttribute('loading', 'eager')
+    expect(screen.getByAltText('A movie')).toHaveAttribute('fetchPriority', 'high')
+    expect(screen.getByAltText('A series')).toHaveAttribute('loading', 'lazy')
+  })
+
+  it('shows the title, release year, and accessible rating', () => {
     renderItems()
     expect(screen.getByText('A movie')).toBeInTheDocument()
-    const overview = screen.getByText(/Movie overview/)
-    expect(overview.textContent).toBe('Movie overview...') // 95 chars + ellipsis
+    expect(screen.getByText('2026')).toBeInTheDocument()
+    expect(screen.getByLabelText('TMDB rating 8.0 out of 10')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'View A movie' })).toHaveAccessibleDescription('Movie overview')
   })
 })

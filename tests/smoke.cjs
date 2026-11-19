@@ -89,6 +89,7 @@ async function main() {
     const endpoints = [
       ['/api/movies/popular?page=1', data => data.results[0].title === 'Fixture Movie'],
       ['/api/series/popular?page=1', data => data.results[0].name === 'Fixture Series'],
+      ['/api/search?query=Space%20%26%20Time&page=2', data => data.results[0].title === 'Another Fixture Movie'],
       ['/api/cast/movie/101', data => data[0].name === 'Fixture Actor'],
       ['/api/info/trailer/movie/101', data => data.results[0].key === 'fixture-video'],
       ['/api/info/watchproviders/movie/101', data => data.results.BR.flatrate[0].provider_name === 'Fixture Stream']
@@ -100,7 +101,7 @@ async function main() {
       assert.ok(check(await response.json()), url)
       console.log(`OK ${url}`)
     }
-    for (const url of ['/api/movies/popular?page=0', '/api/series/popular?page=501', '/api/cast/person/101']) {
+    for (const url of ['/api/movies/popular?page=0', '/api/series/popular?page=501', '/api/search?query=test&page=501', '/api/cast/person/101']) {
       const response = await fetch(base + url)
       assert.equal(response.status, 400, url)
       assert.equal(response.headers.get('cache-control'), 'no-store', `${url} caching`)

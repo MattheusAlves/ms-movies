@@ -26,7 +26,8 @@ beforeEach(() => {
     data: options.initialData,
     loading: false,
     isValidating: false,
-    setSize: vi.fn()
+    setSize: vi.fn(async () => []),
+    size: 1
   }))
 })
 
@@ -51,6 +52,17 @@ it.each([
   expect(getPopular).toHaveBeenCalledWith(resource, expect.any(Object))
   fireEvent.click(screen.getByText('+'))
   expect(JSON.parse(localStorage.getItem(watchlistConfig.storageKey)!).items[0]).toMatchObject({ mediaId: 101, mediaType })
-  fireEvent.click(screen.getByAltText('Fixture'))
-  expect(push).toHaveBeenCalledWith(`/info/${mediaType}/101`)
+  expect(screen.getByRole('link', { name: 'View Fixture' })).toHaveAttribute('href', `/info/${mediaType}/101`)
+})
+
+it('announces the end when the last discovery page is empty', () => {
+  getPopular.mockReturnValue({
+    data: [{ results: [{ id: 101, title: 'Fixture' }] }, { results: [] }],
+    loading: false,
+    isValidating: false,
+    setSize: vi.fn(async () => []),
+    size: 2
+  })
+  render(<AppProviders><DiscoveryView resource="movies" initialData={[{ results: [] }]} /></AppProviders>)
+  expect(screen.getByText('You’ve reached the end.')).toBeInTheDocument()
 })

@@ -9,5 +9,5 @@ export const dynamic = 'force-dynamic'
 export default async function SearchPage({ params }: { params: Promise<{ title: string }> }) {
   const { title } = await params
   const data = await searchTitles(title)
-  return <SearchResults data={data} />
+  return <SearchResults data={data} query={title} />
 }

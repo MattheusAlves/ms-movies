@@ -7,7 +7,7 @@ interface Props {
   mediaId: string
 }
 export const useGetTrailer = ({ mediaType, mediaId }: Props) => {
-  const { data, error, ...rest } = useSWR<{ results: Array<{ key: string }> }>(
+  const { data, error, ...rest } = useSWR<{ results: Array<{ key: string; site?: string; type?: string }> }>(
     endpoint.api.trailer(mediaType, mediaId),
     fetcher
   )

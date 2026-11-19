@@ -13,5 +13,5 @@ export default defineConfig([
     files: ['tests/setup.tsx'],
     rules: { '@next/next/no-img-element': 'off' }
   },
-  globalIgnores(['.next/**', 'node_modules/**', 'out/**', 'build/**', 'next-env.d.ts', 'playwright-report/**', 'test-results/**'])
+  globalIgnores(['.next/**', 'node_modules/**', 'out/**', 'build/**', 'next-env.d.ts', 'playwright-report/**', 'test-results/**', '.agents/**'])
 ])

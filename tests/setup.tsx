@@ -9,7 +9,7 @@ vi.mock('server-only', () => ({}))
 // real components; individual tests can override with their own vi.mock.
 vi.mock('next/image', () => ({
   default: props => {
-    const { src, alt = '', width, height, sizes, className, fill, onLoad } = props
+    const { src, alt = '', width, height, sizes, className, fill, onLoad, loading, fetchPriority } = props
     return (
       <img
         src={src}
@@ -17,6 +17,8 @@ vi.mock('next/image', () => ({
         width={width}
         height={height}
         sizes={sizes}
+        loading={loading}
+        fetchPriority={fetchPriority}
         className={className}
         onLoad={onLoad}
         data-fill={fill || undefined}

@@ -7,6 +7,7 @@ type Resource = 'movies' | 'series'
 export const endpoint = {
   api: {
     popular: (resource: Resource, page: number) => `/api/${resource}/popular?page=${page}`,
+    search: (query: string, page: number) => `/api/search?${new URLSearchParams({ query, page: String(page) })}`,
     cast: (mediaType: Segment, mediaId: Segment) => `/api/cast/${mediaType}/${mediaId}`,
     trailer: (mediaType: Segment, mediaId: Segment) => `/api/info/trailer/${mediaType}/${mediaId}`,
     watchProviders: (mediaType: Segment, mediaId: Segment) => `/api/info/watchproviders/${mediaType}/${mediaId}`,

@@ -34,17 +34,18 @@ test('discovery, watchlist, search and details work after hydration', async ({ p
   await expect(page).toHaveURL(/\/search\/fixture$/)
   await expect(page.getByAltText('Fixture Movie').first()).toBeVisible()
 
-  await page.locator('.poster-wrapper').first().click()
+  await page.getByRole('link', { name: 'View Fixture Movie' }).first().click()
   await expect(page).toHaveURL(/\/info\/movie\/101$/)
   await expect(page).toHaveTitle('MS - Fixture Movie')
   await expect(page.getByText('A fixture movie.')).toBeVisible()
   await expect(page.getByAltText('Fixture Actor')).toBeVisible()
-  await expect(page.getByText('Available in Brazil ▼')).toBeVisible()
+  await expect(page.getByText('Available in Brazil')).toBeVisible()
   await expect(page.getByText('Fixture Stream')).toBeVisible()
-  await expect(page.locator('iframe[title="video"]')).toHaveAttribute('src', /fixture-video/)
+  await page.getByRole('button', { name: /Play trailer/ }).click()
+  await expect(page.locator('iframe[title="Fixture Movie trailer"]')).toHaveAttribute('src', /fixture-video/)
 
   if (testInfo.project.name === 'mobile') await page.getByRole('button', { name: 'Toggle navigation' }).click()
-  await page.getByRole('link', { name: 'Series' }).click()
+  await page.getByRole('link', { name: 'Series', exact: true }).click()
   await expect(page).toHaveURL(/\/series$/)
   await expect(page.getByAltText('Fixture Series').first()).toBeVisible()
   expect(errors).toEqual([])
@@ -99,7 +100,7 @@ for (const [resource, title, mediaType, id] of [
         return raw ? JSON.parse(raw).items.find(item => item.mediaId === mediaId)?.mediaType : undefined
       }, id)
     }).toBe(mediaType)
-    await poster.click()
+    await poster.getByRole('link', { name: `View ${title}` }).click()
     await expect(page).toHaveURL(new RegExp(`/info/${mediaType}/${id}$`))
   })
 }

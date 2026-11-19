@@ -2,8 +2,9 @@ import useSWR from 'swr'
 import fetcher from '@/util/fetcher'
 import { endpoint } from '@/config/endpoint'
 
+interface Provider { provider_id?: number; provider_name: string }
 interface WatchProviders {
-  results?: Record<string, { flatrate?: Array<{ provider_name: string }> }>
+  results?: Record<string, { flatrate?: Provider[]; rent?: Provider[]; buy?: Provider[]; free?: Provider[]; ads?: Provider[] }>
 }
 interface Props {
   mediaType: string
