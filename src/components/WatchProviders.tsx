@@ -23,6 +23,7 @@ export default function WatchProviders({ mediaType, mediaId }: { mediaType: stri
           <div key={label}><h3>{label}</h3><ul>{providers.map((provider, index) => <li key={provider.provider_id ?? `${provider.provider_name}-${index}`}>{provider.provider_name}</li>)}</ul></div>
         ) : null)}</div>
       ) : <p className={styles.muted}>No streaming availability is listed for {contentConfig.watchRegionName}.</p>}
+      <p className={styles.providerCredit}>Availability information provided by JustWatch via TMDB.</p>
     </section>
   )
 }

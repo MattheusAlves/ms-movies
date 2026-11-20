@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest'
 
-import { normalizeMediaItem } from '@/util/media'
+import { formatReleaseDate, normalizeMediaItem } from '@/util/media'
 
 describe('normalizeMediaItem', () => {
   it('normalizes a TMDB discovery/search item', () => {
@@ -68,5 +68,19 @@ describe('normalizeMediaItem', () => {
       posterPath: '',
       backdropPath: ''
     })
+  })
+})
+
+describe('formatReleaseDate', () => {
+  it('formats an ISO date in long localized form without day shift', () => {
+    expect(formatReleaseDate('2026-03-14', 'en-US')).toBe('March 14, 2026')
+  })
+
+  it('formats an ISO date in another locale', () => {
+    expect(formatReleaseDate('2026-03-14', 'pt-BR')).toBe('14 de março de 2026')
+  })
+
+  it('falls back to the raw string for a bare year', () => {
+    expect(formatReleaseDate('2026', 'en-US')).toBe('2026')
   })
 })

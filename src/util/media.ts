@@ -24,6 +24,18 @@ export interface RawMediaItem extends Partial<MediaSummary> {
   backdrop_path?: string | null
 }
 
+// TMDB dates are ISO `YYYY-MM-DD`. Render them in long localized form
+// (e.g. "March 14, 2026"); anything else (a bare year, a partial or
+// unparseable value) is returned unchanged.
+export function formatReleaseDate(date: string, locale: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return date
+  // Append local midnight so the date is parsed as local time; a bare
+  // `YYYY-MM-DD` string is otherwise treated as UTC and can shift a day.
+  const parsed = new Date(`${date}T00:00:00`)
+  if (Number.isNaN(parsed.getTime())) return date
+  return parsed.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' })
+}
+
 export function normalizeMediaItem(
   raw: RawMediaItem
 ): MediaSummary {

@@ -16,9 +16,15 @@
   text-underline-offset: 0.2em;
 }
 
+// The cover defines a stable baseline: at desktop widths the poster column
+// reaches its 300px max (450px tall at 2/3), which fits eyebrow + title +
+// tagline + genres + synopsis + facts + button for all but very tall text.
+// The grid row is never shorter than the poster, so the watchlist button
+// (margin-top: auto in .intro) pins to the cover's bottom edge; only a
+// synopsis/title combination taller than the cover pushes it below.
 .hero {
   display: grid;
-  grid-template-columns: minmax(190px, 300px) minmax(0, 1fr);
+  grid-template-columns: minmax(240px, 340px) minmax(0, 1fr);
   gap: clamp(1.5rem, 3vw, 3rem);
   padding: 1rem;
 }
@@ -36,12 +42,20 @@
 
 .intro {
   max-width: 780px;
-  align-self: center;
+  // Stretch to the full row height (defined by whichever column is taller)
+  // so the title aligns with the poster top and the watchlist button can
+  // pin itself to the poster's bottom edge, regardless of synopsis length.
+  align-self: stretch;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   button {
     width: fit-content;
+    // Absorbs leftover row height so the button pins to the poster's
+    // bottom edge; .facts reserves the minimum gap (see below).
+    margin-top: auto;
+  }
+  .facts {
+    margin-bottom: 1rem;
   }
 }
 
@@ -68,7 +82,7 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   list-style: none;
-  margin: 0 0 1.5rem;
+  margin: 0 0rem;
   padding: 0;
 }
 
@@ -83,7 +97,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem 2.5rem;
-  // margin: 2rem 0;
+  margin:0;
   padding: 1.2rem 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -124,6 +138,13 @@
 
 .sectionHeading > span,
 .muted {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+// JustWatch attribution shown alongside availability, per TMDB's terms.
+.providerCredit {
+  margin-top: 1.5rem;
   color: var(--muted);
   font-size: 0.75rem;
 }
@@ -382,7 +403,9 @@
 
 .skeletonHero {
   display: grid;
-  grid-template-columns: minmax(190px, 300px) minmax(0, 1fr);
+  // Same poster column as .hero so the skeleton cover matches the real
+  // cover's width and height; a smaller placeholder shifts the layout on load.
+  grid-template-columns: minmax(240px, 340px) minmax(0, 1fr);
   gap: clamp(1.5rem, 3vw, 3rem);
   padding: 1rem;
 }
@@ -483,7 +506,8 @@
 
 .modalPanel .backdrop {
   inset: -1.25rem 0 0;
-  height: clamp(190px, 25vw, 300px);
+  height: 100%;
+  top:0;
   border-radius: 18px 18px 0 0;
 }
 
