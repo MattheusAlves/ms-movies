@@ -108,7 +108,7 @@ test('uses valid TMDB poster and cast image sizes', async ({ page }) => {
   expect(await imageUrl('Fixture Actor')).toContain('/h632/fixture-actor.jpg')
 })
 
-test('keeps the title beside the poster on narrow detail screens', async ({ page }) => {
+test('stacks the cover above the synopsis on narrow detail screens', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 720 })
   await page.goto('/info/movie/101')
   const poster = await page.getByAltText('Fixture Movie', { exact: true }).boundingBox()
@@ -118,10 +118,43 @@ test('keeps the title beside the poster on narrow detail screens', async ({ page
     const rect = range.getClientRects()[0]
     return { x: rect.x, y: rect.y }
   })
+  const synopsis = await page.getByText('A fixture movie.').boundingBox()
   expect(poster).not.toBeNull()
-  expect(title.x).toBeGreaterThanOrEqual(poster!.x + poster!.width)
-  expect(title.y).toBeLessThan(poster!.y + poster!.height)
+  // The cover sits on its own full-width row, nothing beside it.
+  const heroContentWidth = await page.locator('.hero, [class*="hero"]').first().evaluate(el => {
+    const style = getComputedStyle(el)
+    return el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)
+  })
+  expect(poster!.width).toBeGreaterThanOrEqual(heroContentWidth - 4)
+  // Title and synopsis read below the cover, not beside it.
+  expect(title.y).toBeGreaterThanOrEqual(poster!.y + poster!.height)
+  expect(synopsis!.y).toBeGreaterThan(poster!.y + poster!.height)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+})
+
+test('collapsed browse menu does not reserve space in the mobile nav panel', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/movies')
+  await page.getByRole('button', { name: 'Toggle navigation' }).click()
+  const browseItem = page.getByRole('button', { name: 'Browse', exact: true })
+  await expect(browseItem).toBeVisible()
+  // With Browse collapsed, its list item must be roughly one row tall, not
+  // carrying the hidden dropdown's height in the flow.
+  const heights = await page.evaluate(() => {
+    const item = document.querySelector('.browse-item')!
+    const browse = item.querySelector('.browse-menu')!
+    return { item: item.getBoundingClientRect().height, menu: browse.getBoundingClientRect().height }
+  })
+  expect(heights.menu).toBe(0)
+  expect(heights.item).toBeLessThan(70)
+  // Nav links follow directly under the Browse trigger.
+  const movies = await page.getByRole('link', { name: 'Movies', exact: true }).boundingBox()
+  expect(movies!.y).toBeLessThan(200)
+  // Opening Browse expands in place without pushing links off-panel.
+  await browseItem.click()
+  await expect(page.locator('.browse-menu.is-open')).toBeVisible()
+  const moviesOpen = await page.getByRole('link', { name: 'Movies', exact: true }).boundingBox()
+  expect(moviesOpen!.y).toBeGreaterThan(movies!.y)
 })
 
 test('detail watchlist control and credits work', async ({ page }) => {

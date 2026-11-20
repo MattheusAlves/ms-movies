@@ -2,8 +2,6 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Cookies from 'js-cookie'
 
-vi.mock('next/router', () => ({ useRouter: () => ({ push: vi.fn(), query: { type: 'movies' } }) }))
-
 import PosterCard from '@/components/shared/PosterCard'
 import { ToWatchListProvider } from '@/contexts/ToWatchListContext'
 import { NavigationContext } from '@/contexts/NavigationContext'

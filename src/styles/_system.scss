@@ -1105,6 +1105,13 @@ a.poster-title:hover {
     background: transparent;
   }
 
+  // Hidden dropdowns must not reserve space in the nav panel's flow —
+  // opacity/visibility alone leave a ~465px hole that pushes the links
+  // and search far down the panel.
+  .browse-menu.t-dropdown:not(.is-open) {
+    display: none;
+  }
+
   .browse-menu-head,
   .browse-menu-foot {
     display: none;

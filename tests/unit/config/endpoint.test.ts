@@ -13,8 +13,6 @@ describe('endpoint configuration', () => {
     expect(endpoint.api.cast('movie', 101)).toBe('/api/cast/movie/101')
     expect(endpoint.api.trailer('tv', 202)).toBe('/api/info/trailer/tv/202')
     expect(endpoint.api.watchProviders('movie', 101)).toBe('/api/info/watchproviders/movie/101')
-    expect(endpoint.api.category('movies')).toBe('/api/movies/by/category')
-    expect(endpoint.api.category('series')).toBe('/api/series/by/category')
   })
 
   it('builds TMDB request paths and URLs', () => {

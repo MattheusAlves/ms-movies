@@ -1,7 +1,5 @@
 import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
-vi.mock('next/router', () => ({ useRouter: () => ({ push: vi.fn(), query: { type: 'movies' } }) }))
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import RenderItems from '@/components/shared/RenderItems'
 import { ToWatchListProvider } from '@/contexts/ToWatchListContext'

@@ -16,9 +16,7 @@ export const endpoint = {
     detail: (mediaType: Segment, mediaId: Segment) => `/api/info/${mediaType}/${mediaId}`,
     cast: (mediaType: Segment, mediaId: Segment) => `/api/cast/${mediaType}/${mediaId}`,
     trailer: (mediaType: Segment, mediaId: Segment) => `/api/info/trailer/${mediaType}/${mediaId}`,
-    watchProviders: (mediaType: Segment, mediaId: Segment) => `/api/info/watchproviders/${mediaType}/${mediaId}`,
-    // These routes are currently placeholders, not functional API endpoints.
-    category: (resource: Resource) => `/api/${resource}/by/category`
+    watchProviders: (mediaType: Segment, mediaId: Segment) => `/api/info/watchproviders/${mediaType}/${mediaId}`
   },
   tmdb: {
     // Server-only: never use this base URL or API credentials in client code.

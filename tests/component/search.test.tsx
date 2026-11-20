@@ -2,9 +2,6 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const { push } = vi.hoisted(() => ({ push: vi.fn() }))
-vi.mock('next/router', () => ({
-  useRouter: () => ({ push, query: {} })
-}))
 
 import Search from '@/components/shared/Search'
 import { NavigationContext } from '@/contexts/NavigationContext'

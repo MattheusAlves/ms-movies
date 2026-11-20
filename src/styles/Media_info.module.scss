@@ -483,19 +483,20 @@
 }
 
 @media (max-width: 700px) {
+  // Mirrors the real hero's stacked mobile layout: the placeholder cover is
+  // full-width on its own row, text bars read below it.
   .skeletonHero {
-    display: flow-root;
+    display: block;
     padding-bottom: 2rem;
   }
 
   .skeletonPoster {
-    float: left;
-    width: min(38%, 180px);
-    margin: 0 1rem 1rem 0;
+    width: 100%;
+    margin: 0;
   }
 
-  .skeletonFacts {
-    clear: both;
+  .skeletonIntro {
+    margin-top: 1.25rem;
   }
 }
 
@@ -517,27 +518,33 @@
 }
 
 @media (max-width: 700px) {
+  // Mobile: the cover sits on its own full-width row; title, synopsis and
+  // everything else read below it. Space is tight, so no side-by-side.
   .hero {
-    display: flow-root;
+    display: block;
     padding-bottom: 2rem;
   }
 
   .poster {
-    float: left;
-    width: min(38%, 180px);
-    margin: 0 1rem 1rem 0;
+    width: 100%;
+    margin: 0;
   }
 
   .intro h1 {
+    margin-top: 1.25rem;
     font-size: clamp(1.7rem, 6vw, 2.8rem);
+  }
+
+  .intro button {
+    margin-top: 0;
+  }
+
+  .intro .facts {
+    margin-bottom: 1.25rem;
   }
 
   .overview {
     font-size: 0.9rem;
-  }
-
-  .facts {
-    clear: both;
   }
 
   .backdrop {
