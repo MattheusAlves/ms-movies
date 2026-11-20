@@ -1,48 +1,28 @@
-import { useRouter } from 'next/router'
-import { useState, useEffect, useContext } from 'react'
-import { BsSearch } from 'react-icons/bs'
-import { ContentTypeContext } from '@/contexts/ContentTypeContext'
-interface Props {
-  rightNav: boolean
-}
-const Search = (props: Props): JSX.Element => {
-  const isNavActive = props.rightNav
-  useEffect(() => setIsActive(false), [isNavActive])
-  const [isActive, setIsActive] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const router = useRouter()
-  const { changeContentType } = useContext(ContentTypeContext)
+import { useState } from 'react'
+import { useNavigation } from '@/contexts/NavigationContext'
 
-  const toggleActive = () => {
-    if (searchQuery) {
-      return handleSearch()
-    }
-    setIsActive(!isActive)
+export default function Search({ onNavigate }: { onNavigate?: () => void }): React.JSX.Element {
+  const [query, setQuery] = useState('')
+  const router = useNavigation()
+
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const value = query.trim()
+    if (!value) return
+    onNavigate?.()
+    router.push(`/search/${encodeURIComponent(value)}`)
   }
 
-  const handleSearch = () => {
-    changeContentType('')
-    router.push(`/search/${searchQuery}`)
-  }
   return (
-    <div className="search-wrapper">
-      <form onSubmit={handleSearch}>
-        <input
-          type="search"
-          className={isActive ? 'search-input active' : 'search-input'}
-          placeholder="Search"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-        />
-      </form>
-      <BsSearch
-        // color="#4b45ff"
-        size={18}
-        className="search-icon"
-        onClick={toggleActive}
-      />
-    </div>
+    <form className="site-search" role="search" onSubmit={submit}>
+      <label className="sr-only" htmlFor="site-search">Search movies and series</label>
+      <input id="site-search" type="search" placeholder="Search titles" value={query} onChange={event => setQuery(event.target.value)} />
+      <button className="search-icon" type="submit" aria-label="Submit search">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <path d="m16 16 4 4" />
+        </svg>
+      </button>
+    </form>
   )
 }
-
-export default Search
