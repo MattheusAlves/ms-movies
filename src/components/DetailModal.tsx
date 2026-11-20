@@ -102,7 +102,26 @@ function DetailModal({ detail, onClose }: { detail: DetailRequest; onClose: () =
             <button className="button button--outline" type="button" onClick={() => { void mutate() }}>Retry</button>
           </div>
         ) : !data ? (
-          <p className={styles.modalStatus} role="status">Loading details…</p>
+          <>
+          <p className={`${styles.modalStatus} sr-only`} role="status">Loading details…</p>
+          <div className={styles.modalSkeleton} aria-hidden="true">
+            <div className={styles.skeletonHero}>
+              <div className={styles.skeletonPoster} />
+              <div className={styles.skeletonIntro}>
+                <div className={`${styles.skeletonBar} ${styles.skeletonEyebrow}`} />
+                <div className={`${styles.skeletonBar} ${styles.skeletonTitle}`} />
+                <div className={`${styles.skeletonBar} ${styles.skeletonW75}`} />
+                <div className={`${styles.skeletonBar} ${styles.skeletonW50}`} />
+                <div className={styles.skeletonFacts}>
+                  <div className={styles.skeletonFact} />
+                  <div className={styles.skeletonFact} />
+                  <div className={styles.skeletonFact} />
+                </div>
+                <div className={`${styles.skeletonBar} ${styles.skeletonW25}`} />
+              </div>
+            </div>
+          </div>
+          </>
         ) : (
           <DetailContent data={data.data} mediaType={data.mediaType} imdbRating={data.imdbRating} modal />
         )}
