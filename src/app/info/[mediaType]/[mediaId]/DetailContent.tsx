@@ -37,7 +37,7 @@ export default function DetailContent({ data, mediaType, imdbRating, modal = fal
           </div>
         )}
         <article className={styles.hero}>
-          <div className={styles.poster}><DetailPoster src={data.poster_path ? endpoint.tmdb.image(imageConfig.posterWidth, data.poster_path) : '/404.png'} title={title} className={styles.posterImage} /></div>
+          <div className={styles.poster}><DetailPoster src={data.poster_path ? endpoint.tmdb.image(imageConfig.detailPosterWidth, data.poster_path) : '/404.png'} title={title} className={styles.posterImage} /></div>
           <div className={styles.intro}>
             <p className="eyebrow">{isMovie ? 'Film' : 'Series'} / {date ? date.slice(0, 4) : 'Year unavailable'}</p>
             <h1 id="detail-title">{title}<span>.</span></h1>

@@ -29,7 +29,10 @@ export const endpoint = {
     credits: (mediaType: Segment, mediaId: Segment) => `3/${mediaType}/${mediaId}/credits`,
     videos: (mediaType: Segment, mediaId: Segment) => `3/${mediaType}/${mediaId}/videos`,
     watchProviders: (mediaType: Segment, mediaId: Segment) => `3/${mediaType}/${mediaId}/watch/providers`,
-    image: (width: number, path: string) => `${configuredBaseUrl(process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL, 'NEXT_PUBLIC_TMDB_IMAGE_BASE_URL')}/w${width}${path}`
+    // Width is a TMDB size token: a pixel width like 500 (w500) or 'original'
+    // (for hero-scale backdrops that must survive 2x+ upscales on large screens).
+    // Profile sizes are TMDB's fixed-height crops and use the h-prefix (h632).
+    image: (size: number | 'original' | `h${number}`, path: string) => `${configuredBaseUrl(process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL, 'NEXT_PUBLIC_TMDB_IMAGE_BASE_URL')}/${size === 'original' ? 'original' : typeof size === 'number' ? `w${size}` : size}${path}`
   },
   imdb: {
     get host() {

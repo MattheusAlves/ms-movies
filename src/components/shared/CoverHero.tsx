@@ -18,8 +18,10 @@ export default function CoverHero({ item, resource }: {
   const media = normalizeMediaItem({ ...item, media_type: resource === 'movies' ? 'movie' : 'tv' })
   const isMovie = resource === 'movies'
   const imagePath = item.backdrop_path || item.poster_path
+  // Both branches render full-bleed at 100vw, so both need the
+  // highest-quality source TMDB offers.
   const imageUrl = imagePath
-    ? endpoint.tmdb.image(item.backdrop_path ? imageConfig.backdropHeroWidth : imageConfig.posterWidth, imagePath)
+    ? endpoint.tmdb.image(imageConfig.backdropHeroWidth, imagePath)
     : null
   const year = media.releaseDate.slice(0, 4)
   const href = `/info/${media.mediaType}/${media.mediaId}`

@@ -12,7 +12,6 @@
   --display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --ui: 'Inter', system-ui, -apple-system, sans-serif;
   --mono: 'Plex Mono', ui-monospace, monospace;
-  --layout-width: 1500px;
   --layout-gutter: clamp(1rem, 3vw, 3rem);
   --header-height: 72px;
 }
@@ -118,7 +117,6 @@ a {
 
 .site-nav {
   position: relative;
-  max-width: var(--layout-width);
   margin: auto;
   min-height: var(--header-height);
   padding: 0 var(--layout-gutter);
@@ -216,7 +214,6 @@ a {
   min-width: 0;
   height: 40px;
   border: 1px solid var(--line);
-  margin-right: 1rem;
   border-radius: 8px;
   background: rgb(10, 10, 10, 0.2);
   transition: border-color .2s var(--motion-ease), background-color .2s var(--motion-ease);
@@ -269,7 +266,6 @@ a {
 .page-shell {
   flex: 1;
   width: 100%;
-  max-width: var(--layout-width);
   margin: 0 auto;
   padding: clamp(1.25rem, 2.5vw, 2rem) var(--layout-gutter) 4rem;
 }
@@ -423,7 +419,14 @@ a {
 }
 
 .poster-title {
-  display: block;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  // Reserve two lines on every card so long titles truncate instead of
+  // stretching their grid row; single-line titles keep an empty second
+  // line and all captions stay the same height.
+  -webkit-line-clamp: 2;
+  min-height: 1.5m;
   margin-top: .8rem;
   color: var(--text);
   font-size: .86rem;
@@ -626,7 +629,6 @@ a.poster-title:hover {
 }
 
 .footer-inner {
-  max-width: var(--layout-width);
   margin: auto;
   padding: .75rem var(--layout-gutter);
 }
@@ -750,6 +752,26 @@ a.poster-title:hover {
 
   .section-rule span:last-child {
     display: none;
+  }
+}
+
+/* Wide screens: add columns instead of growing posters, keeping
+   each card near its ~240px design size. */
+@media (min-width: 1500px) {
+  .poster-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1800px) {
+  .poster-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 2400px) {
+  .poster-grid {
+    grid-template-columns: repeat(10, minmax(0, 1fr));
   }
 }
 
