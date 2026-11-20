@@ -44,6 +44,16 @@ describe('useGetPopular', () => {
     }
   })
 
+  it('includes genre and decade filters in the SWR key', () => {
+    useSWRInfinite.mockReturnValue({ data: [], setSize: vi.fn(), isValidating: false })
+    renderHook(() => useGetPopular('movies', { initialData: null, genre: 18, decade: 2010 }))
+    const getKey = useSWRInfinite.mock.calls.at(-1)![0]
+    expect(getKey(0)).toBe('/api/movies/popular?page=1&genre=18&decade=2010')
+    expect(getKey(2)).toBe('/api/movies/popular?page=3&genre=18&decade=2010')
+    renderHook(() => useGetPopular('series', { initialData: null, genre: 53 }))
+    expect(useSWRInfinite.mock.calls.at(-1)![0](0)).toBe('/api/series/popular?page=1&genre=53')
+  })
+
   it('stops requesting pages after the last or an empty page', () => {
     useSWRInfinite.mockReturnValue({ data: [], setSize: vi.fn(), isValidating: false })
     renderHook(() => useGetPopular('movies', { initialData: null }))

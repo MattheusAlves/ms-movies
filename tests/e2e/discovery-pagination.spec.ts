@@ -33,10 +33,17 @@ test('keeps loaded titles and retries a failed next page', async ({ page }) => {
     body: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/aYkAAAAASUVORK5CYII=', 'base64')
   }))
   let fail = true
-  await page.route('**/api/movies/popular?page=2', route => fail
-    ? route.fulfill({ status: 503, contentType: 'application/json', body: '{}' })
-    : route.continue())
+  let pageTwoRequests = 0
+  await page.route('**/api/movies/popular?page=2', route => {
+    pageTwoRequests++
+    return fail
+      ? route.fulfill({ status: 503, contentType: 'application/json', body: '{}' })
+      : route.continue()
+  })
   await page.goto('/movies')
+  const sentinel = page.locator('.scroll-sentinel')
+  if (await sentinel.count()) await sentinel.scrollIntoViewIfNeeded().catch(() => {})
+  await expect.poll(() => pageTwoRequests).toBe(1)
   await expect(page.getByText('Unable to refresh titles. Please try again.')).toBeVisible()
   await expect(page.getByAltText('Fixture Movie', { exact: true })).toBeVisible()
   fail = false

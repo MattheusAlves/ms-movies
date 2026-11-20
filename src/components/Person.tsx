@@ -20,10 +20,10 @@ export default function Persons({ mediaType, mediaId }: { mediaType: string; med
       {error ? <p className="status-message" role="status">Cast information is temporarily unavailable.</p> : loading ? <p role="status">Loading cast…</p> : data?.length ? (
         <ul className={styles.castList} tabIndex={0} aria-label="Cast members, scroll horizontally">
           {data.filter(person => person.profile_path).map(person => (
-            <li key={person.id} className={styles.castCard}>
+            <li key={person.id} className={styles.castCard}><a href={`https://www.themoviedb.org/person/${person.id}`} target="_blank" rel="noopener noreferrer">
               <CastPortrait path={person.profile_path!} name={person.name || person.original_name || 'Cast member'} />
               <strong>{person.name || person.original_name}</strong><span>{person.character || 'Cast'}</span>
-            </li>
+            </a></li>
           ))}
         </ul>
       ) : <p className={styles.muted}>No cast information is available yet.</p>}

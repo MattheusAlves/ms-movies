@@ -6,8 +6,14 @@ type Resource = 'movies' | 'series'
 
 export const endpoint = {
   api: {
-    popular: (resource: Resource, page: number) => `/api/${resource}/popular?page=${page}`,
+    popular: (resource: Resource, page: number, filters: { genre?: number | null; decade?: number | null } = {}) => {
+      const params = new URLSearchParams({ page: String(page) })
+      if (filters.genre) params.set('genre', String(filters.genre))
+      if (filters.decade) params.set('decade', String(filters.decade))
+      return `/api/${resource}/popular?${params}`
+    },
     search: (query: string, page: number) => `/api/search?${new URLSearchParams({ query, page: String(page) })}`,
+    detail: (mediaType: Segment, mediaId: Segment) => `/api/info/${mediaType}/${mediaId}`,
     cast: (mediaType: Segment, mediaId: Segment) => `/api/cast/${mediaType}/${mediaId}`,
     trailer: (mediaType: Segment, mediaId: Segment) => `/api/info/trailer/${mediaType}/${mediaId}`,
     watchProviders: (mediaType: Segment, mediaId: Segment) => `/api/info/watchproviders/${mediaType}/${mediaId}`,

@@ -7,6 +7,7 @@ vi.mock('axios', () => ({ default: { get: axiosGet } }))
 import { GET as moviesPopular } from '@/app/api/movies/popular/route'
 import { GET as seriesPopular } from '@/app/api/series/popular/route'
 import { GET as search } from '@/app/api/search/route'
+import { GET as detail } from '@/app/api/info/[mediaType]/[mediaId]/route'
 import { GET as cast } from '@/app/api/cast/[mediaType]/[mediaId]/route'
 import { GET as trailer } from '@/app/api/info/trailer/[mediaType]/[mediaId]/route'
 import { GET as watchProviders } from '@/app/api/info/watchproviders/[mediaType]/[mediaId]/route'
@@ -39,6 +40,36 @@ describe('API routes proxy TMDB', () => {
       expect(axiosGet.mock.calls[index][1].params).toEqual({
         api_key: 'test-key', sort_by: 'popularity.desc', language: 'en-US', page: 7
       })
+    }
+  })
+
+  it('forwards genre and decade filters to TMDB discover', async () => {
+    axiosGet.mockResolvedValue({ data: { results: [{ id: 44 }] } })
+    const res = await moviesPopular(request('?genre=18&decade=2010'))
+    expect(res.status).toBe(200)
+    expect(axiosGet.mock.calls[0][1].params).toMatchObject({
+      with_genres: 18,
+      'primary_release_date.gte': '2010-01-01',
+      'primary_release_date.lte': '2019-12-31'
+    })
+    const tvRes = await seriesPopular(request('?decade=1990'))
+    expect(tvRes.status).toBe(200)
+    expect(axiosGet.mock.calls[1][1].params).toMatchObject({
+      'first_air_date.gte': '1990-01-01',
+      'first_air_date.lte': '1999-12-31'
+    })
+  })
+
+  it('serves title details for the detail modal and rejects invalid identities', async () => {
+    axiosGet.mockResolvedValue({ data: { id: 101, title: 'Fixture Movie', genres: [] } })
+    const res = await detail(request(), context('movie', '101'))
+    expect(res.status).toBe(200)
+    expect(res.headers.get('Cache-Control')).toBe('no-store')
+    expect((await res.json()).data.title).toBe('Fixture Movie')
+    for (const invalid of [context('person', '101'), context('movie', 'abc')]) {
+      const rejected = await detail(request(), invalid)
+      expect(rejected.status).toBe(400)
+      expect(await rejected.json()).toEqual({ message: 'Invalid request' })
     }
   })
 
@@ -103,6 +134,10 @@ describe('API routes proxy TMDB', () => {
       () => moviesPopular(request('?page=0')),
       () => seriesPopular(request('?page=501')),
       () => moviesPopular(request('?page=1&page=2')),
+      () => moviesPopular(request('?genre=abc')),
+      () => moviesPopular(request('?genre=0')),
+      () => seriesPopular(request('?decade=1899')),
+      () => seriesPopular(request('?decade=2100')),
       () => search(request('?query=test&page=501')),
       () => search(request('?query=test&page=1&page=2')),
       () => search(request('?query=test&query=other')),

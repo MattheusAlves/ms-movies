@@ -8,6 +8,8 @@ describe('endpoint configuration', () => {
   it('builds the existing application API routes', () => {
     expect(endpoint.api.popular('movies', 2)).toBe('/api/movies/popular?page=2')
     expect(endpoint.api.popular('series', 3)).toBe('/api/series/popular?page=3')
+    expect(endpoint.api.popular('movies', 2, { genre: 18, decade: 2010 })).toBe('/api/movies/popular?page=2&genre=18&decade=2010')
+    expect(endpoint.api.popular('series', 1, { genre: 53 })).toBe('/api/series/popular?page=1&genre=53')
     expect(endpoint.api.cast('movie', 101)).toBe('/api/cast/movie/101')
     expect(endpoint.api.trailer('tv', 202)).toBe('/api/info/trailer/tv/202')
     expect(endpoint.api.watchProviders('movie', 101)).toBe('/api/info/watchproviders/movie/101')

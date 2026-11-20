@@ -40,6 +40,36 @@ describe('server-only TMDB client', () => {
     expect(axiosGet).not.toHaveBeenCalled()
   })
 
+  it('forwards genre and decade filters to discover', async () => {
+    axiosGet.mockResolvedValue({ data: { results: [] } })
+    await tmdb.discover('movie', 1, { genre: 18, decade: 2010 })
+    expect(axiosGet.mock.calls[0][1].params).toMatchObject({
+      with_genres: 18,
+      'primary_release_date.gte': '2010-01-01',
+      'primary_release_date.lte': '2019-12-31'
+    })
+    await tmdb.discover('tv', 1, { decade: 1990 })
+    expect(axiosGet.mock.calls[1][1].params).toMatchObject({
+      'first_air_date.gte': '1990-01-01',
+      'first_air_date.lte': '1999-12-31'
+    })
+    expect(axiosGet.mock.calls[1][1].params.with_genres).toBeUndefined()
+  })
+
+  it('rejects invalid discover filters before any request', async () => {
+    for (const operation of [
+      () => tmdb.discover('movie', 1, { genre: 0 }),
+      () => tmdb.discover('movie', 1, { genre: 'abc' }),
+      () => tmdb.discover('movie', 1, { genre: 1.5 }),
+      () => tmdb.discover('movie', 1, { decade: 1899 }),
+      () => tmdb.discover('movie', 1, { decade: '20a0' }),
+      () => tmdb.discover('movie', 1, { decade: 2100 })
+    ]) {
+      await expect(operation()).rejects.toMatchObject({ status: 400 })
+    }
+    expect(axiosGet).not.toHaveBeenCalled()
+  })
+
   it('validates provider response shapes', async () => {
     axiosGet.mockResolvedValue({ data: { results: 'not-an-array' } })
     await expect(tmdb.search('space')).rejects.toMatchObject({ status: 502 })

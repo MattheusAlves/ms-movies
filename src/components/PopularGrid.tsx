@@ -6,10 +6,19 @@ import type { MediaPage } from '@/util/tmdb'
 interface Props {
   resource: 'movies' | 'series'
   initialData: MediaPage[]
+  genre?: number | null
+  decade?: number | null
 }
 
-export default function PopularGrid({ resource, initialData }: Props): React.JSX.Element {
-  const { data, error, loading, mutate, setSize, size, isValidating } = useGetPopular(resource, { initialData })
+export default function PopularGrid({ resource, initialData, genre = null, decade = null }: Props): React.JSX.Element {
+  // Browse-menu filters are applied server-side by TMDB, so results are
+  // exhaustive across pages. The unfiltered server payload must not seed a
+  // filtered SWR key, hence no fallback while filtering.
+  const { data, error, loading, mutate, setSize, size, isValidating } = useGetPopular(resource, {
+    initialData: genre || decade ? null : initialData,
+    genre,
+    decade
+  })
   const lastPage = data?.at(-1)
   const loadingMore = isValidating && size > (data?.length ?? 0)
   const hasMore = !!lastPage?.results.length && (data?.length ?? 0) < Math.min(lastPage.total_pages ?? 500, 500)

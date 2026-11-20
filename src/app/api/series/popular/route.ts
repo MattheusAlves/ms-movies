@@ -2,9 +2,13 @@ import { tmdb } from '@/util/tmdb'
 import { jsonNoStore, tmdbErrorResponse } from '@/util/apiResponse'
 
 export async function GET(request: Request): Promise<Response> {
-  const pages = new URL(request.url).searchParams.getAll('page')
+  const params = new URL(request.url).searchParams
+  const pages = params.getAll('page')
   try {
-    return jsonNoStore(await tmdb.discover('tv', pages.length > 1 ? pages : pages[0]))
+    return jsonNoStore(await tmdb.discover('tv', pages.length > 1 ? pages : pages[0], {
+      genre: params.get('genre'),
+      decade: params.get('decade')
+    }))
   } catch (error) {
     return tmdbErrorResponse(error)
   }

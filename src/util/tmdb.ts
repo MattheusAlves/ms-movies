@@ -32,12 +32,23 @@ export interface TitleDetails {
   name?: string
   overview?: string
   poster_path?: string | null
+  backdrop_path?: string | null
   genres?: Array<{ id: number; name: string }> | null
   release_date?: string
   first_air_date?: string
   budget?: number
+  revenue?: number
+  runtime?: number
+  status?: string
+  tagline?: string
   number_of_seasons?: number
+  number_of_episodes?: number
+  episode_run_time?: number[] | null
+  networks?: Array<{ id: number; name: string }> | null
+  created_by?: Array<{ id: number; name: string }> | null
+  production_companies?: Array<{ id: number; name: string }> | null
   vote_average?: number
+  vote_count?: number
   imdb_id?: string
 }
 
@@ -82,6 +93,25 @@ function validPage(page: unknown): number {
   return value
 }
 
+export interface DiscoverFilters {
+  genre?: unknown
+  decade?: unknown
+}
+
+function validGenre(value: unknown): number | undefined {
+  if (value === undefined || value === null || value === '') return undefined
+  if (!/^\d+$/.test(String(value))) throw new TmdbError('Invalid genre', 400)
+  const genre = Number(value)
+  if (!Number.isSafeInteger(genre) || genre < 1) throw new TmdbError('Invalid genre', 400)
+  return genre
+}
+
+function validDecade(value: unknown): number | undefined {
+  if (value === undefined || value === null || value === '') return undefined
+  if (!/^(19|20)\d{2}$/.test(String(value))) throw new TmdbError('Invalid decade', 400)
+  return Number(value)
+}
+
 function object(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value)
 }
@@ -123,10 +153,17 @@ async function request(path: string, params: Record<string, unknown> = {}): Prom
 }
 
 export const tmdb = {
-  async discover(mediaType: unknown, page?: unknown): Promise<MediaPage> {
+  async discover(mediaType: unknown, page?: unknown, filters: DiscoverFilters = {}): Promise<MediaPage> {
     if (mediaType !== 'movie' && mediaType !== 'tv') throw new TmdbError('Invalid media type', 400)
+    const genre = validGenre(filters.genre)
+    const decade = validDecade(filters.decade)
+    const dateField = mediaType === 'movie' ? 'primary_release_date' : 'first_air_date'
     const data = await request(endpoint.tmdb.discover(mediaType), {
-      sort_by: contentConfig.discoverySort, language: contentConfig.language, page: validPage(page)
+      sort_by: contentConfig.discoverySort,
+      language: contentConfig.language,
+      page: validPage(page),
+      ...(genre ? { with_genres: genre } : {}),
+      ...(decade ? { [`${dateField}.gte`]: `${decade}-01-01`, [`${dateField}.lte`]: `${decade + 9}-12-31` } : {})
     })
     return mediaPage(data)
   },

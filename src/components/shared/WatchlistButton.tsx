@@ -19,7 +19,7 @@ export default function WatchlistButton({ item, variant = 'card' }: { item: Medi
   return (
     <button
       type="button"
-      className={variant === 'detail' ? 'button button--accent' : 'save-button'}
+      className={variant === 'detail' ? 'button button--outline' : 'save-button'}
       disabled={!canEdit || !validId || (!supported && !saved)}
       aria-label={label}
       aria-pressed={saved}

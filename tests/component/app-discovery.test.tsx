@@ -4,12 +4,13 @@ import Cookies from 'js-cookie'
 
 const { push, navigation, getPopular } = vi.hoisted(() => ({
   push: vi.fn(),
-  navigation: { pathname: '/movies' },
+  navigation: { pathname: '/movies', searchParams: new URLSearchParams() },
   getPopular: vi.fn()
 }))
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push }),
-  usePathname: () => navigation.pathname
+  usePathname: () => navigation.pathname,
+  useSearchParams: () => navigation.searchParams
 }))
 vi.mock('@/actions/popular', () => ({ useGetPopular: getPopular }))
 
@@ -22,6 +23,7 @@ beforeEach(() => {
   Cookies.remove('itemsId')
   localStorage.clear()
   push.mockReset()
+  navigation.searchParams = new URLSearchParams()
   getPopular.mockImplementation((_resource, options) => ({
     data: options.initialData,
     loading: false,
@@ -53,6 +55,17 @@ it.each([
   fireEvent.click(screen.getByText('+'))
   expect(JSON.parse(localStorage.getItem(watchlistConfig.storageKey)!).items[0]).toMatchObject({ mediaId: 101, mediaType })
   expect(screen.getByRole('link', { name: 'View Fixture' })).toHaveAttribute('href', `/info/${mediaType}/101`)
+})
+
+it('passes browse filters to the popular hook without the unfiltered fallback', () => {
+  navigation.pathname = '/movies'
+  navigation.searchParams = new URLSearchParams('genre=18&decade=2010')
+  render(
+    <AppProviders>
+      <DiscoveryView resource="movies" initialData={[{ results: [{ id: 101, title: 'Fixture' }] }]} />
+    </AppProviders>
+  )
+  expect(getPopular).toHaveBeenCalledWith('movies', { initialData: null, genre: 18, decade: 2010 })
 })
 
 it('announces the end when the last discovery page is empty', () => {

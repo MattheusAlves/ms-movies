@@ -4,6 +4,7 @@ import { useContext, useId, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ContentTypeContext } from '@/contexts/ContentTypeContext'
+import { useOpenDetail } from '@/components/DetailModal'
 import WatchlistButton from '@/components/shared/WatchlistButton'
 import type { MediaSummary } from '@/util/media'
 
@@ -15,6 +16,14 @@ export default function PosterCard({ src, info, featured = false }: { src: strin
   const valid = (mediaType === 'movie' || mediaType === 'tv') && Number.isSafeInteger(info.mediaId) && info.mediaId > 0
   const href = `/info/${mediaType}/${info.mediaId}`
   const title = info.title || 'Untitled'
+  const openDetail = useOpenDetail()
+  const openInModal = openDetail && valid
+    ? (event: React.MouseEvent) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+        event.preventDefault()
+        openDetail({ mediaType: mediaType as 'movie' | 'tv', mediaId: info.mediaId })
+      }
+    : undefined
   const image = (
     <Image
       src={imageError ? '/404.png' : src}
@@ -31,7 +40,7 @@ export default function PosterCard({ src, info, featured = false }: { src: strin
     <article className="poster-wrapper">
       <div className="poster-art">
         {valid ? (
-          <Link className="poster-image" href={href} aria-label={`View ${title}`} aria-describedby={summaryId}>
+          <Link className="poster-image" href={href} aria-label={`View ${title}`} aria-describedby={summaryId} onClick={openInModal}>
             {image}
             <span className="poster-overlay" aria-hidden="true"><span>Synopsis</span><span>{info.overview || 'No synopsis is available yet.'}</span></span>
           </Link>
@@ -40,7 +49,7 @@ export default function PosterCard({ src, info, featured = false }: { src: strin
       </div>
       {valid && <p id={summaryId} className="sr-only">{info.overview || 'No synopsis is available yet.'}</p>}
       <div className="poster-caption">
-        {valid ? <Link className="poster-title" href={href}>{title}</Link> : <span className="poster-title">{title}</span>}
+        {valid ? <Link className="poster-title" href={href} onClick={openInModal}>{title}</Link> : <span className="poster-title">{title}</span>}
         <p className="poster-meta">
           <span>{info.releaseDate ? info.releaseDate.slice(0, 4) : 'Year unavailable'}</span>
           {info.voteAverage > 0 && <span aria-label={`TMDB rating ${info.voteAverage.toFixed(1)} out of 10`}>★ {info.voteAverage.toFixed(1)}</span>}

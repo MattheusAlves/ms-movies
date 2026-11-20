@@ -3,6 +3,7 @@
 import { AppNavigationProvider } from '@/contexts/AppNavigationProvider'
 import { ContentTypeProvider } from '@/contexts/ContentTypeContext'
 import { ToWatchListProvider } from '@/contexts/ToWatchListContext'
+import { DetailModalProvider } from '@/components/DetailModal'
 import NavigationProgress from './NavigationProgress'
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
@@ -10,7 +11,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     <AppNavigationProvider>
       <NavigationProgress />
       <ContentTypeProvider>
-        <ToWatchListProvider>{children}</ToWatchListProvider>
+        <ToWatchListProvider>
+          <DetailModalProvider>{children}</DetailModalProvider>
+        </ToWatchListProvider>
       </ContentTypeProvider>
     </AppNavigationProvider>
   )
