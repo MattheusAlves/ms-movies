@@ -1,0 +1,70 @@
+// Motion primitives shared by the header menus, the cover hero and detail views.
+// Durations are intentionally short on close so dismissal feels immediate.
+:root {
+  --motion-ease: cubic-bezier(.22, 1, .36, 1);
+  --motion-bounce: cubic-bezier(.34, 1.36, .64, 1);
+  --dropdown-open: 250ms;
+  --dropdown-close: 150ms;
+  --panel-open: 400ms;
+  --panel-close: 300ms;
+  --cover-in: 900ms;
+  --header-fade: 350ms;
+  --link-underline: 280ms;
+}
+
+.t-dropdown {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-6px) scale(.98);
+  transform-origin: top left;
+  pointer-events: none;
+  transition: opacity var(--dropdown-close) var(--motion-ease),
+    transform var(--dropdown-close) var(--motion-ease),
+    visibility 0s linear var(--dropdown-close);
+}
+
+.t-dropdown.is-open {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  transition: opacity var(--dropdown-open) var(--motion-ease),
+    transform var(--dropdown-open) var(--motion-ease),
+    visibility 0s linear 0s;
+}
+
+.cover-hero-media { animation: coverIn var(--cover-in) var(--motion-ease) both; }
+@keyframes coverIn {
+  from { opacity: .35; transform: scale(1.06); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.t-panel-slide {
+  visibility: hidden;
+  transform: translateY(64px);
+  opacity: 0;
+  filter: blur(2px);
+  pointer-events: none;
+  transition: transform var(--panel-close) var(--motion-ease),
+    opacity var(--panel-close) var(--motion-ease),
+    filter var(--panel-close) var(--motion-ease),
+    visibility 0s linear var(--panel-close);
+  will-change: transform, opacity, filter;
+}
+.t-panel-slide[data-open='true'] {
+  visibility: visible;
+  transform: translateY(0);
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+  transition: transform var(--panel-open) var(--motion-ease),
+    opacity var(--panel-open) var(--motion-ease),
+    filter var(--panel-open) var(--motion-ease),
+    visibility 0s linear 0s;
+}
+
+.detail-backdrop { animation: backdropIn var(--panel-open) var(--motion-ease) both; }
+@keyframes backdropIn {
+  from { opacity: 0; transform: scale(1.04); }
+  to { opacity: 1; transform: scale(1); }
+}

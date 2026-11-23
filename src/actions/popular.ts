@@ -1,37 +1,31 @@
-import { useSWRInfinite } from 'swr'
+import useSWRInfinite from 'swr/infinite'
+
 import fetcher from '@/util/fetcher'
-interface returnedData {
-  data?: Record<string, any>
-  error?: Record<string, any>
-  loading?: boolean
-  isValidating?: boolean
-  size?: number
-  setSize?: (size: number) => Promise<any>
-}
+import { endpoint } from '@/config/endpoint'
+import type { MediaPage } from '@/util/tmdb'
+
 interface Props {
-  initialData: unknown[]
-}
-const getMovieKey = pageIndex => {
-  // if (pageIndex === 0) return '/api/movies/popular?page=1 '
-  return `/api/movies/popular?page=${pageIndex + 1}` // SWR key
-}
-const getSerieKey = pageIndex => {
-  return `/api/series/popular?page=${pageIndex + 1}`
+  initialData: MediaPage[] | null
+  genre?: number | null
+  decade?: number | null
 }
 
-export const useGetPopularMovies = ({ initialData }: Props): returnedData => {
-  const { data, error, ...rest } = useSWRInfinite(getMovieKey, fetcher, {
-    initialSize: 4,
-    initialData,
-    persistSize: false
-  })
-  return { data, error, loading: !data && !error, ...rest }
-}
-export const useGetPopularSeries = ({ initialData }: Props): returnedData => {
-  const { data, error, ...rest } = useSWRInfinite(getSerieKey, fetcher, {
-    initialSize: 4,
-    initialData,
-    persistSize: false
-  })
+// One hook for both grids: the SWR keys only differ by resource and filters.
+export const useGetPopular = (
+  resource: 'movies' | 'series',
+  { initialData, genre = null, decade = null }: Props
+) => {
+  const { data, error, ...rest } = useSWRInfinite<MediaPage>(
+    (pageIndex, previousPage) => {
+      if (previousPage && (previousPage.results.length === 0 || (previousPage.total_pages !== undefined && pageIndex >= previousPage.total_pages))) return null
+      return endpoint.api.popular(resource, pageIndex + 1, { genre, decade })
+    },
+    fetcher,
+    {
+      initialSize: 1,
+      fallbackData: initialData ?? undefined,
+      persistSize: false
+    }
+  )
   return { data, error, loading: !data && !error, ...rest }
 }
